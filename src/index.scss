@@ -1,0 +1,43 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+@font-face{
+  font-family: 'HanSansCN-Normal';
+  src: url(./fonts/SourceHanSansCN-Normal.otf);
+}
+@font-face{
+  font-family: 'HanSansCN-Bold';
+  src: url(./fonts/SourceHanSansCN-Bold.otf);
+}
+@font-face{
+  font-family: 'HanSansCN-ExtraLight';
+  src: url(./fonts/SourceHanSansCN-ExtraLight.otf);
+}
+@font-face{
+  font-family: 'HanSansCN-Heavy';
+  src: url(./fonts/SourceHanSansCN-Heavy.otf);
+}
+@font-face{
+  font-family: 'HanSansCN-Light';
+  src: url(./fonts/SourceHanSansCN-Light.otf);
+}
+@font-face{
+  font-family: 'HanSansCN-Medium';
+  src: url(./fonts/SourceHanSansCN-Medium.otf);
+}
+@font-face{
+  font-family: 'HanSansCN-Regular';
+  src: url(./fonts/SourceHanSansCN-Regular.otf);
+}
