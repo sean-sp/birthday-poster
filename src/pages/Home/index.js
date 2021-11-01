@@ -6,7 +6,7 @@ function Home() {
   // const [autioSrc,setAutioSrc] = this.useState('./audio/birthday.mp3')
   return (
     <div className="content">
-      <header className="header_title">BIRTHDAY STAR</header>
+      <header className="header_title">BIRTHDAY STAR11</header>
       <div className='mask'>
       </div>
       <div className='info'>
