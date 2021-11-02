@@ -1,8 +1,18 @@
+import React, { useEffect } from 'react';
+import imgng from '../../static/images/bg1.png';
+import audioSrc from '../../static/audio/birthday.mp3';
+import { request } from '../../utils';
+import APIS from '../../configs';
 import './index.scss';
-import imgng from '../../images/bg1.png'
-import audioSrc from '../../audio/birthday.mp3'
 
-function Home() {
+const Home = () => {
+  useEffect(() => {
+    request.get(APIS.detail, { recordId: 1 }).then((res) => {
+      console.log(res)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }, [])
   // const [autioSrc,setAutioSrc] = this.useState('./audio/birthday.mp3')
   return (
     <div className="content">

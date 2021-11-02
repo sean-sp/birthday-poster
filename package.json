@@ -151,5 +151,6 @@
   },
   "devDependencies": {
     "node-sass": "^6.0.1"
-  }
+  },
+  "proxy": "http://172.25.9.147:80"
 }
