@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Button } from 'react-vant';
 import imgng from '../../static/images/bg1.png';
 import audioSrc from '../../static/audio/birthday.mp3';
 import { request } from '../../utils';
@@ -6,6 +7,7 @@ import APIS from '../../configs';
 import './index.scss';
 
 const Home = () => {
+  const [showPopup, setShowPopup] = useState(false);
   useEffect(() => {
     request.get(APIS.detail, { recordId: 1 }).then((res) => {
       console.log(res)
@@ -16,8 +18,8 @@ const Home = () => {
   // const [autioSrc,setAutioSrc] = this.useState('./audio/birthday.mp3')
   return (
     <div className="content">
-      <header className="header_title">BIRTHDAY STAR</header>
-      <div className='mask'>
+      <header>BIRTHDAY STAR</header>
+      {/* <div className='mask'>
       </div>
       <div className='info'>
         <h4>HAPPY BIRTHDAY</h4>
@@ -33,7 +35,8 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <img src={imgng} />
+      <img src={imgng} /> */}
+      <Button type="primary">主要按钮</Button>
     </div>
   )
 }
