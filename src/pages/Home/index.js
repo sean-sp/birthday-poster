@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from 'react-vant';
 import Comments from './components/comments';
 import Bubble from './components/bubble';
@@ -8,7 +8,23 @@ import { request } from '../../utils';
 import APIS from '../../configs';
 import './index.scss';
 
+const dataList = [
+  {
+      name:'丽丽',
+      text:'生日快乐'
+  },
+{
+  name:'爱德华兹',
+  text:'生日快乐'
+},
+{
+  name:'flying',
+  text:'生日快乐'
+},
+]
+
 const Home = () => {
+  const [commentsList, setCommentsList] = useState(dataList);
   useEffect(() => {
     request.get(APIS.detail, { recordId: 1 }).then((res) => {
       console.log(res)
@@ -16,6 +32,16 @@ const Home = () => {
       console.log(err)
     })
   }, []);
+
+  const sendCommentsCb = (comment) => {
+    setCommentsList([
+      ...commentsList,
+      {
+        name: `海马体${parseInt( Math.random() * 10)}`,
+        text: comment
+      }
+    ])
+  }
   // const [autioSrc,setAutioSrc] = this.useState('./audio/birthday.mp3')
   return (
     <div className="content">
@@ -37,9 +63,8 @@ const Home = () => {
         </div>
       </div>
       <img src={imgng} /> */}
-      <Bubble />
-      <Button type="primary">主要按钮</Button>
-      <Comments />
+      <Bubble commentsList={commentsList}/>
+      <Comments sendCommentsCb={sendCommentsCb}/>
     </div>
   )
 }

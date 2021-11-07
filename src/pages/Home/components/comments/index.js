@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { VoiceSvgComponent, ImgSvgComponent, SendSvgComponent, KeyboardSvgComponent } from './svg'
 import './index.scss';
 
-const Comments = () => {
+const Comments = (props) => {
+  const {sendCommentsCb} = props;
   const [inputVal, setInputVal] = useState('');
   const [sendVisible, setSendVisible] = useState(false);
   const [voiceBtnVisible, setVoiceBtnVisible] = useState(false);
@@ -20,7 +21,7 @@ const Comments = () => {
     setVoiceBtnVisible(!voiceBtnVisible);
   }
 
-  const start = () => {
+  const start = (e) => {
     setVoiceBtnClickOff(true);
     setTimeOutEvent(setTimeout(() => {
       setLongClick(1)
@@ -44,6 +45,12 @@ const Comments = () => {
     console.log('发送语音');
   }
 
+  const sendComments = () => {
+    if (inputVal) {
+      sendCommentsCb(inputVal);
+    }
+  }
+
   return (
     <div className="comments-btn-box">
       {voiceBtnVisible ? <div className={`voice-btn ${voiceBtnClickOff ? 'active' : ''}`}
@@ -59,9 +66,11 @@ const Comments = () => {
       <div className="voice-svg" onClick={onVoiceClick}>
         {voiceBtnVisible ? <KeyboardSvgComponent /> : <VoiceSvgComponent />}
       </div>
-      <div className="img-svg">
-        {sendVisible ? <SendSvgComponent /> : <ImgSvgComponent />}
-      </div>
+      {sendVisible ? <div className="img-svg" onClick={sendComments}>
+        <SendSvgComponent />
+      </div> : <div className="img-svg">
+        <ImgSvgComponent />
+      </div>}
     </div>
   )
 }
