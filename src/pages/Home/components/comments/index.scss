@@ -1,0 +1,64 @@
+.comments-btn-box{
+  display: flex;
+  padding: 0 0.3rem;
+  .voice-btn{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      height: 0.8rem;
+      font-size: 0.32rem;
+      color: #ffffff;
+      background-color: rgba(0,0,0,0.3);
+      border-radius: 0.1rem;
+      &.active{
+          background-color: rgba(0,0,0,0.5);
+          opacity: 0.8;
+      }
+  }
+  .text-input{
+      display: flex;
+      flex: 1;
+      align-items: center;
+      padding: 0 0.13rem;
+      background-color: rgba(0,0,0,0.3);
+      border-radius: 0.1rem;
+      input{
+          width: 100%;
+          border: none;
+          font-size: 0.28rem;
+          background-color: transparent;
+      }
+      input:-moz-placeholder,
+      textarea:-moz-placeholder { 
+          color: #ffffff;
+          opacity: 0.9;
+      }
+      input:-ms-input-placeholder,
+      textarea:-ms-input-placeholder { 
+          color: #ffffff;
+          opacity: 0.9;
+      }
+      input::-webkit-input-placeholder,
+      textarea::-webkit-input-placeholder { 
+          color: #ffffff;
+          opacity: 0.9;
+      }
+  }
+  .voice-svg,
+  .img-svg{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 0.8rem;
+      height: 0.8rem;
+      background-color: rgba(0,0,0,0.3);
+      border-radius: 50%;
+      svg{
+          width: 0.5rem;
+      }
+  }
+  .voice-svg{
+      margin: 0 0.13rem;
+  }
+}
