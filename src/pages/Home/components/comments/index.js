@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import { Toast } from 'react-vant';
 import { VoiceSvgComponent, ImgSvgComponent, SendSvgComponent, KeyboardSvgComponent } from './svg'
 import './index.scss';
 
 const Comments = (props) => {
-  const { sendCommentsCb, uploadImg } = props;
+  const { sendCommentsCb, uploadImg, startVoice, sendVoice } = props;
   const [inputVal, setInputVal] = useState('');
   const [sendVisible, setSendVisible] = useState(false);
   const [voiceBtnVisible, setVoiceBtnVisible] = useState(false);
@@ -22,6 +23,7 @@ const Comments = (props) => {
   }
 
   const start = (e) => {
+    // startVoice();
     setVoiceBtnClickOff(true);
     setTimeOutEvent(setTimeout(() => {
       setLongClick(1)
@@ -39,10 +41,13 @@ const Comments = (props) => {
     setLongClick(0);
     setVoiceBtnClickOff(false);
     if (timeOutEvent !== null && longClick === 0) {
-      console.log('说话时间太短');
+      Toast({
+        message: '说话时间太短',
+        icon: 'warning',
+      });
       return;
     }
-    console.log('发送语音');
+    // sendVoice();
   }
 
   const sendComments = () => {
