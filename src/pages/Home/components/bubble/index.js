@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ReactSeamlessScroll from 'react-seamless-scroll';
 import './index.scss';
 
 const Bubble = (props) => {
     const {commentsList} = props;
 
-    const optionSetting = () =>{
-        return {
-            step:0.2,//速度，值越大，速度越快
-            limitMoveNum: 1,
-            hoverStop:true,//鼠标悬停效果，false为关闭该效果
-　　　　　　　 singleHeight: 26,//单行停顿
-　　　　　　　 waitTime: 2500,//单行停顿的时间
-　　　　　}
-    }
+//     const optionSetting = () =>{
+//         return {
+//             step:0.2,//速度，值越大，速度越快
+//             limitMoveNum: 1,
+//             hoverStop:true,//鼠标悬停效果，false为关闭该效果
+// 　　　　　　　 singleHeight: 26,//单行停顿
+// 　　　　　　　 waitTime: 2500,//单行停顿的时间
+// 　　　　　}
+//     }
 
     return (
         <div className="bubble_box">

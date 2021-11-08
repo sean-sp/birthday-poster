@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from 'react-vant';
+// import { Button } from 'react-vant';
 import Comments from './components/comments';
 import Bubble from './components/bubble';
-import imgng from '../../static/images/bg1.png';
-import audioSrc from '../../static/audio/birthday.mp3';
+// import imgng from '../../static/images/bg1.png';
+// import audioSrc from '../../static/audio/birthday.mp3';
 import { request } from '../../utils';
 import APIS from '../../configs';
 import './index.scss';
