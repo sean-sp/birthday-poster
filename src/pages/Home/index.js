@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import wx from 'weixin-js-sdk';
-import { Image } from 'react-vant';
+import { Image, Button } from 'react-vant';
 import Comments from './components/comments';
 import Bubble from './components/bubble';
 // import audioSrc from '../../static/audio/birthday.mp3';
-import { request } from '../../utils';
-import APIS from '../../configs';
+// import { request } from '../../utils';
+// import APIS from '../../configs';
 import './index.scss';
 
 const dataList = [
@@ -34,23 +34,31 @@ const dataList = [
 const Home = () => {
   const [commentsList, setCommentsList] = useState(dataList);
   const [imgLocalData, setImgLocalData] = useState('');
+  const [voiceLocalId, setVoiceLocalId] = useState('');
 
   useEffect(() => {
-    request.get(APIS.detail, { recordId: 1 }).then((res) => {
-      console.log(res)
-    }).catch((err) => {
-      console.log(err)
-    })
+    // request.get(APIS.detail, { recordId: 1 }).then((res) => {
+    //   console.log(res)
+    // }).catch((err) => {
+    //   console.log(err)
+    // })
   }, []);
 
   useEffect(() => {
     wx.config({
       debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-      appId: 'wx520eab2632bb4323', // 必填，公众号的唯一标识
-      timestamp: '1636356266', // 必填，生成签名的时间戳
+      appId: 'wxcdb66d9a27951efe', // 必填，公众号的唯一标识
+      timestamp: '1636364397', // 必填，生成签名的时间戳
       nonceStr: 'test', // 必填，生成签名的随机串
-      signature: '6685b282908e82efce6e987c214a46f420272312',// 必填，签名
-      jsApiList: ['chooseImage', 'getLocalImgData'] // 必填，需要使用的JS接口列表
+      signature: '1399adfaede53db93ca2707fb859aa3585756712',// 必填，签名
+      jsApiList: [
+        'chooseImage',
+        'getLocalImgData',
+        'startRecord',
+        'stopRecord',
+        'onVoiceRecordEnd',
+        'playVoice'
+      ] // 必填，需要使用的JS接口列表
     });
     // wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
     // });
@@ -65,6 +73,35 @@ const Home = () => {
         type: 'txt'
       }
     ])
+  }
+
+  const startVoice = () => {
+    wx.startRecord({
+      success: function () {
+        wx.onVoiceRecordEnd({
+          // 录音时间超过一分钟没有停止的时候会执行 complete 回调
+          complete: function (res) {
+            const voiceLocalId = res.localId;
+            setVoiceLocalId(voiceLocalId);
+          }
+        });
+      }
+    });
+  }
+
+  const sendVoice = () => {
+    wx.stopRecord({
+      success: function (res) {
+        const voiceLocalId = res.localId;
+        setVoiceLocalId(voiceLocalId);
+      }
+    });
+  }
+
+  const playVoice = () => {
+    wx.playVoice({
+      localId: voiceLocalId // 需要播放的音频的本地ID，由stopRecord接口获得
+    });
   }
 
   const uploadImg = () => {
@@ -91,8 +128,13 @@ const Home = () => {
       <Comments
         sendCommentsCb={sendCommentsCb}
         uploadImg={uploadImg}
+        startVoice={startVoice}
+        sendVoice={sendVoice}
       />
       {imgLocalData && <Image width="1rem" height="1rem" round src={imgLocalData} />}
+      <Button type="primary" onClick={startVoice}>说话</Button>
+      <Button type="primary" onClick={sendVoice}>松手</Button>
+      <Button type="primary" onClick={playVoice}>播放</Button>
     </div>
   )
 }
