@@ -47,10 +47,10 @@ const Home = () => {
   useEffect(() => {
     wx.config({
       debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-      appId: 'wxcdb66d9a27951efe', // 必填，公众号的唯一标识
-      timestamp: '1636364397', // 必填，生成签名的时间戳
+      appId: 'wx520eab2632bb4323', // 必填，公众号的唯一标识
+      timestamp: '1636379745', // 必填，生成签名的时间戳
       nonceStr: 'test', // 必填，生成签名的随机串
-      signature: '1399adfaede53db93ca2707fb859aa3585756712',// 必填，签名
+      signature: 'ed2143301c1e2d9315e2e83009fb49cbb5d8476d',// 必填，签名
       jsApiList: [
         'chooseImage',
         'getLocalImgData',
@@ -104,6 +104,12 @@ const Home = () => {
     });
   }
 
+  const playVoiceCb = () =>{
+    wx.playVoice({
+      localId: voiceLocalId // 需要播放的音频的本地ID，由stopRecord接口获得
+    });
+  }
+
   const uploadImg = () => {
     wx.chooseImage({
       count: 1, // 默认9
@@ -124,7 +130,7 @@ const Home = () => {
   return (
     <div className="content">
       <header>BIRTHDAY STAR</header>
-      <Bubble commentsList={commentsList} />
+      <Bubble commentsList={commentsList} palyVoice={playVoiceCb} />
       <Comments
         sendCommentsCb={sendCommentsCb}
         uploadImg={uploadImg}
