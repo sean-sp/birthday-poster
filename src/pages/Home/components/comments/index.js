@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { VoiceSvgComponent, ImgSvgComponent, SendSvgComponent, KeyboardSvgComponent } from './svg'
+import { VoiceSvgComponent, ImgSvgComponent, SendSvgComponent, KeyboardSvgComponent } from '../svg'
 import './index.scss';
 
 const Comments = (props) => {

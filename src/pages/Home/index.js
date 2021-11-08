@@ -11,15 +11,23 @@ import './index.scss';
 const dataList = [
   {
     name: '丽丽',
-    text: '生日快乐'
+    text: '生日快乐',
+    type: 'txt'
   },
   {
     name: '爱德华兹',
-    text: '生日快乐'
+    text: '生日快乐',
+    type: 'txt'
   },
   {
     name: 'flying',
-    text: '生日快乐'
+    text: '生日快乐',
+    type: 'txt'
+  },
+  {
+    name: '大的文',
+    text: '生日快乐',
+    type: 'voice'
   },
 ]
 
@@ -38,10 +46,10 @@ const Home = () => {
   useEffect(() => {
     wx.config({
       debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-      appId: 'wxcdb66d9a27951efe', // 必填，公众号的唯一标识
-      timestamp: '1636350702', // 必填，生成签名的时间戳
+      appId: 'wx520eab2632bb4323', // 必填，公众号的唯一标识
+      timestamp: '1636356266', // 必填，生成签名的时间戳
       nonceStr: 'test', // 必填，生成签名的随机串
-      signature: '9d6aea4426bae9b48825c04284c85de110c40403',// 必填，签名
+      signature: '6685b282908e82efce6e987c214a46f420272312',// 必填，签名
       jsApiList: ['chooseImage', 'getLocalImgData'] // 必填，需要使用的JS接口列表
     });
     // wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
