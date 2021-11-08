@@ -3,7 +3,7 @@ import { VoiceSvgComponent, ImgSvgComponent, SendSvgComponent, KeyboardSvgCompon
 import './index.scss';
 
 const Comments = (props) => {
-  const {sendCommentsCb} = props;
+  const { sendCommentsCb, uploadImg } = props;
   const [inputVal, setInputVal] = useState('');
   const [sendVisible, setSendVisible] = useState(false);
   const [voiceBtnVisible, setVoiceBtnVisible] = useState(false);
@@ -68,7 +68,7 @@ const Comments = (props) => {
       </div>
       {sendVisible ? <div className="img-svg" onClick={sendComments}>
         <SendSvgComponent />
-      </div> : <div className="img-svg">
+      </div> : <div className="img-svg" onClick={uploadImg}>
         <ImgSvgComponent />
       </div>}
     </div>
