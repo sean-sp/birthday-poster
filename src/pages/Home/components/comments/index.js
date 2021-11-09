@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Toast } from 'react-vant';
-import { VoiceSvgComponent, ImgSvgComponent, SendSvgComponent, KeyboardSvgComponent } from './svg'
+import { VoiceSvgComponent, ImgSvgComponent, SendSvgComponent, KeyboardSvgComponent } from '../svg'
 import './index.scss';
 
 const Comments = (props) => {

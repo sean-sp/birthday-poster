@@ -8,19 +8,29 @@
         div{
             display: inline-block;
             width: auto;
-            min-height: 0.4rem;
+            // min-height: 0.4rem;
             background-color:rgba(255,255,255,0.2);
-            border-radius: 0.1rem;
-            font-size: 0.18rem;
+            border-radius: 0.2rem;
+            font-size: 0.28rem;
             font-family: Microsoft YaHei;
             font-weight: 400;
             color: #FFFFFF;
-            margin-bottom: 0.1rem;
+            margin-bottom: 0.15rem;
+            span{
+                padding: 0.05rem 0;
+                display: inline-block;
+            }
             :first-child{
                 margin:0 0.28rem;
             }
             :last-child{
                 margin-right: 0.28rem;
+            }
+            .voice_icon{
+                width: 0.9rem;
+                // height: 0.9rem;
+                display: inline-block;
+                vertical-align: sub;
             }
         }
     }
