@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import { Toast } from 'react-vant';
+import wx from 'weixin-js-sdk';
 import { VoiceSvgComponent, ImgSvgComponent, SendSvgComponent, KeyboardSvgComponent } from '../svg'
 import './index.scss';
 
+let timer = null;
+let startTime = 0;
+let endTime = 0;
+
 const Comments = (props) => {
-  const { sendCommentsCb, uploadImg, startVoice, sendVoice } = props;
+  const { sendCommentsCb, uploadImg, sendVoice } = props;
   const [inputVal, setInputVal] = useState('');
   const [sendVisible, setSendVisible] = useState(false);
   const [voiceBtnVisible, setVoiceBtnVisible] = useState(false);
   const [voiceBtnClickOff, setVoiceBtnClickOff] = useState(false);
-  const [longClick, setLongClick] = useState(0);
-  const [timeOutEvent, setTimeOutEvent] = useState(null);
 
   const onCommentsInput = (e) => {
     const value = e.target.value;
@@ -23,31 +26,66 @@ const Comments = (props) => {
   }
 
   const start = (e) => {
-    // startVoice();
     setVoiceBtnClickOff(true);
-    setTimeOutEvent(setTimeout(() => {
-      setLongClick(1)
-    }, 1000))
+    startTime = new Date().getTime();
+    timer = setTimeout(() => {
+      wx.startRecord({
+        success: () => {
+          // 录音不能超过一分钟 超过一分钟自动停止 并触发该事件
+          wx.onVoiceRecordEnd({
+            // 录音时间超过一分钟没有停止的时候会执行 complete 回调
+            complete: (res) => {
+              // 给出提示
+              Toast('最多只能录制一分钟');
+              // 记录录音的临时ID
+              sendVoice(res.localId);
+            }
+          });
+        },
+        cancel: () => {
+          Toast('用户拒绝授权录音');
+        }
+      });
+    }, 300);
   }
 
   const move = (e) => {
-    clearTimeout(timeOutEvent)
-    setLongClick(0);
     setVoiceBtnClickOff(false);
+    clearTimeout(timer);
+    Toast({
+      message: '取消发送',
+      icon: 'warning',
+    });
+    setTimeout(() => {
+      wx.stopRecord();
+    }, 800);
   }
 
   const end = (e) => {
-    clearTimeout(timeOutEvent)
-    setLongClick(0);
     setVoiceBtnClickOff(false);
-    if (timeOutEvent !== null && longClick === 0) {
+    endTime = new Date().getTime();
+    if (endTime - startTime < 1000) {
+      startTime = 0;
+      endTime = 0;
+      //小于300ms，不录音
+      clearTimeout(timer);
       Toast({
         message: '说话时间太短',
         icon: 'warning',
       });
-      return;
+      setTimeout(() => {
+        wx.stopRecord();
+      }, 800);
+    } else {
+      wx.stopRecord({
+        success: (res) => {
+          sendVoice(res.localId);
+        },
+        fail: (res) => {
+          // alert(JSON.stringify(res));
+        }
+      });
     }
-    // sendVoice();
   }
 
   const sendComments = () => {

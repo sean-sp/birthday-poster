@@ -11,22 +11,22 @@ import './index.scss';
 const dataList = [
   {
     name: '丽丽',
-    text: '生日快乐',
-    type: 'txt'
+    content: '生日快乐',
+    type: 'text'
   },
   {
     name: '爱德华兹',
-    text: '生日快乐',
-    type: 'txt'
+    content: '生日快乐',
+    type: 'text'
   },
   {
     name: 'flying',
-    text: '生日快乐',
-    type: 'txt'
+    content: '生日快乐',
+    type: 'text'
   },
   {
     name: '大的文',
-    text: '生日快乐',
+    content: '',
     type: 'voice'
   },
 ]
@@ -34,7 +34,6 @@ const dataList = [
 const Home = () => {
   const [commentsList, setCommentsList] = useState(dataList);
   const [imgLocalData, setImgLocalData] = useState('');
-  const [voiceLocalId, setVoiceLocalId] = useState('');
 
   useEffect(() => {
     // request.get(APIS.detail, { recordId: 1 }).then((res) => {
@@ -46,11 +45,11 @@ const Home = () => {
 
   useEffect(() => {
     wx.config({
-      debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-      appId: 'wx520eab2632bb4323', // 必填，公众号的唯一标识
-      timestamp: '1636379745', // 必填，生成签名的时间戳
+      debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+      appId: 'wxcdb66d9a27951efe', // 必填，公众号的唯一标识
+      timestamp: '1636445976', // 必填，生成签名的时间戳
       nonceStr: 'test', // 必填，生成签名的随机串
-      signature: 'ed2143301c1e2d9315e2e83009fb49cbb5d8476d',// 必填，签名
+      signature: 'c5c97bee1e4fa081a4591ca6140f3ee5196c07c9',// 必填，签名
       jsApiList: [
         'chooseImage',
         'getLocalImgData',
@@ -75,39 +74,15 @@ const Home = () => {
     ])
   }
 
-  const startVoice = () => {
-    wx.startRecord({
-      success: function () {
-        wx.onVoiceRecordEnd({
-          // 录音时间超过一分钟没有停止的时候会执行 complete 回调
-          complete: function (res) {
-            const voiceLocalId = res.localId;
-            setVoiceLocalId(voiceLocalId);
-          }
-        });
+  const sendVoice = (voiceLocalId) => {
+    setCommentsList([
+      ...commentsList,
+      {
+        name: `海马体${parseInt(Math.random() * 10)}`,
+        content: voiceLocalId,
+        type: 'voice'
       }
-    });
-  }
-
-  const sendVoice = () => {
-    wx.stopRecord({
-      success: function (res) {
-        const voiceLocalId = res.localId;
-        setVoiceLocalId(voiceLocalId);
-      }
-    });
-  }
-
-  const playVoice = () => {
-    wx.playVoice({
-      localId: voiceLocalId // 需要播放的音频的本地ID，由stopRecord接口获得
-    });
-  }
-
-  const playVoiceCb = () =>{
-    wx.playVoice({
-      localId: voiceLocalId // 需要播放的音频的本地ID，由stopRecord接口获得
-    });
+    ])
   }
 
   const uploadImg = () => {
@@ -130,17 +105,13 @@ const Home = () => {
   return (
     <div className="content">
       <header>BIRTHDAY STAR</header>
-      <Bubble commentsList={commentsList} palyVoice={playVoiceCb} />
+      <Bubble commentsList={commentsList} />
       <Comments
         sendCommentsCb={sendCommentsCb}
         uploadImg={uploadImg}
-        startVoice={startVoice}
         sendVoice={sendVoice}
       />
       {imgLocalData && <Image width="1rem" height="1rem" round src={imgLocalData} />}
-      <Button type="primary" onClick={startVoice}>说话</Button>
-      <Button type="primary" onClick={sendVoice}>松手</Button>
-      <Button type="primary" onClick={playVoice}>播放</Button>
     </div>
   )
 }
