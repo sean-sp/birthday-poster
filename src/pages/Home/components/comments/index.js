@@ -7,6 +7,7 @@ import './index.scss';
 let timer = null;
 let startTime = 0;
 let endTime = 0;
+let moveOff = false;
 
 const Comments = (props) => {
   const { sendCommentsCb, uploadImg, sendVoice } = props;
@@ -27,6 +28,7 @@ const Comments = (props) => {
 
   const start = (e) => {
     setVoiceBtnClickOff(true);
+    moveOff = false;
     startTime = new Date().getTime();
     timer = setTimeout(() => {
       wx.startRecord({
@@ -51,6 +53,7 @@ const Comments = (props) => {
 
   const move = (e) => {
     setVoiceBtnClickOff(false);
+    moveOff = true;
     clearTimeout(timer);
     Toast({
       message: '取消发送',
@@ -62,6 +65,7 @@ const Comments = (props) => {
   }
 
   const end = (e) => {
+    if (moveOff) return;
     setVoiceBtnClickOff(false);
     endTime = new Date().getTime();
     if (endTime - startTime < 1000) {

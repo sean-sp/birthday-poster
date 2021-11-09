@@ -69,7 +69,7 @@ const Home = () => {
       {
         name: `海马体${parseInt(Math.random() * 10)}`,
         text: comment,
-        type: 'txt'
+        type: 'text'
       }
     ])
   }
