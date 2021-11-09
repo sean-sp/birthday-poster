@@ -68,7 +68,7 @@ const Home = () => {
       ...commentsList,
       {
         name: `海马体${parseInt(Math.random() * 10)}`,
-        text: comment,
+        content: comment,
         type: 'text'
       }
     ])
