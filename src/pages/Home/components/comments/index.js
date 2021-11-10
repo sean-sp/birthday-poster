@@ -16,6 +16,20 @@ const Comments = (props) => {
   const [voiceBtnVisible, setVoiceBtnVisible] = useState(false);
   const [voiceBtnClickOff, setVoiceBtnClickOff] = useState(false);
 
+  const initRecordPermission = () => {
+    if (!window.localStorage.getItem('rainAllowRecord')) {
+      wx.startRecord({
+        success: () => {
+          window.localStorage.setItem('rainAllowRecord', 1);
+          wx.stopRecord();
+        },
+        cancel: () => {
+          Toast('用户拒绝授权录音');
+        }
+      });
+    }
+  }
+
   const onCommentsInput = (e) => {
     const value = e.target.value;
     setInputVal(value);
@@ -24,6 +38,9 @@ const Comments = (props) => {
 
   const onVoiceClick = () => {
     setVoiceBtnVisible(!voiceBtnVisible);
+    if (!voiceBtnVisible) {
+      initRecordPermission();
+    }
   }
 
   const start = (e) => {

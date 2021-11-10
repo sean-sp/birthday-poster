@@ -1,17 +1,26 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import ReactSeamlessScroll from 'react-seamless-scroll';
 import { VoiceSvgComponent } from '../svg'
-import wx from 'weixin-js-sdk';
+// import wx from 'weixin-js-sdk';
 import './index.scss';
+
+let voiceId = '';
 
 const Bubble = (props) => {
     const { commentsList } = props;
+    const audio = useMemo(() => new Audio(), []);
+
+    useEffect(() => {
+        audio.addEventListener('ended', () => {
+            console.log(`${voiceId}播放停止`);
+        }, false);
+    }, [audio]);
 
     const onCommentTap = (item) => {
         if (item.type === 'voice') {
-            wx.playVoice({
-                localId: item.content // 需要播放的音频的本地ID，由stopRecord接口获得
-            });
+            audio.src = item.content;
+            audio.play();
+            voiceId = item.name;
             return;
         }
         if (item.type === 'img') {
