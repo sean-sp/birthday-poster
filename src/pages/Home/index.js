@@ -48,17 +48,16 @@ const Home = () => {
     wx.config({
       debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
       appId: 'wxcdb66d9a27951efe', // 必填，公众号的唯一标识
-      timestamp: '1636515436', // 必填，生成签名的时间戳
+      timestamp: '1636543360', // 必填，生成签名的时间戳
       nonceStr: 'test', // 必填，生成签名的随机串
-      signature: '8216425a2d0dfae3d51a20f8c7be958f9f4ca99b',// 必填，签名
+      signature: '8d84490c6aaa7f716d771d5a67de2a2db0312446',// 必填，签名
       jsApiList: [
         'checkJsApi',
         'chooseImage',
         'getLocalImgData',
         'startRecord',
         'stopRecord',
-        'onVoiceRecordEnd',
-        'playVoice'
+        'onVoiceRecordEnd'
       ] // 必填，需要使用的JS接口列表
     });
     // wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
@@ -94,6 +93,10 @@ const Home = () => {
       sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
       success: (res) => {
         const imgLocalIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+        if (!window.__wxjs_is_wkwebview) {
+          setImgLocalData(imgLocalIds[0]);
+          return;
+        }
         wx.getLocalImgData({
           localId: imgLocalIds[0], // 图片的localID
           success: (res) => {
@@ -114,7 +117,7 @@ const Home = () => {
         uploadImg={uploadImg}
         sendVoice={sendVoice}
       />
-      {imgLocalData && <Image width="1rem" height="1rem" round src={imgLocalData} />}
+      {imgLocalData && <Image width="2rem" height="2rem" round src={imgLocalData} errorIcon={<div>加载失败</div>} />}
     </div>
   )
 }
