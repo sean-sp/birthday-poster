@@ -28,7 +28,7 @@ const dataList = [
     name: '大的文',
     content: '',
     type: 'voice'
-  },
+  }
 ]
 
 const Home = () => {
