@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { Image,Button } from 'react-vant';
 import wx from 'weixin-js-sdk';
-import { Image, Button } from 'react-vant';
 import Comments from './components/comments';
 import Bubble from './components/bubble';
+import Create from './components/create'
 import bell from '../../static/audio/bell.mp3';
 import birthday from '../../static/audio/birthday.mp3';
 // import { request } from '../../utils';
@@ -110,8 +111,9 @@ const Home = () => {
 
   return (
     <div className="content">
-      <header>BIRTHDAY STAR</header>
-      <Bubble commentsList={commentsList} />
+      {/* <header>BIRTHDAY STAR</header> */}
+      <Create />
+      {/* <Bubble commentsList={commentsList} /> */}
       <Comments
         sendCommentsCb={sendCommentsCb}
         uploadImg={uploadImg}

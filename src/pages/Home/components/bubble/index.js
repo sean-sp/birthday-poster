@@ -32,6 +32,10 @@ const Bubble = (props) => {
         }
     }
 
+    const deleteTap = () =>{
+        
+    }
+
     return (
         <div className="bubble_box">
             <ReactSeamlessScroll speed={30} style={{ width: '5rem', height: '3rem' }}>
