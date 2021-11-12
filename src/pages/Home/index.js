@@ -113,7 +113,7 @@ const Home = () => {
     <div className="content">
       {/* <header>BIRTHDAY STAR</header> */}
       <Create />
-      {/* <Bubble commentsList={commentsList} /> */}
+      <Bubble commentsList={commentsList} />
       <Comments
         sendCommentsCb={sendCommentsCb}
         uploadImg={uploadImg}
