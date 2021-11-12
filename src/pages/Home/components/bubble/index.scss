@@ -1,12 +1,12 @@
 .bubble_box{
-    position: fixed;
+    position: absolute;
     bottom: 1.55rem;
     left: 0.28rem;
     max-width: 4.74rem;
     max-height: 3rem;
     .bubble_item{
         div{
-            display: inline-block;
+            display: table;
             width: auto;
             // min-height: 0.4rem;
             background-color:rgba(255,255,255,0.2);
@@ -16,21 +16,37 @@
             font-weight: 400;
             color: #FFFFFF;
             margin-bottom: 0.15rem;
+            padding: 0.02rem 0;
+            .avatar{
+                width: 0.5rem;
+                height:0.5rem;
+                border-radius: 50%;
+                vertical-align: middle;
+                margin:0 0.28rem;
+            }
             span{
                 padding: 0.05rem 0;
                 display: inline-block;
             }
-            :first-child{
-                margin:0 0.28rem;
+            .nickname{
+                margin-right:0.28rem;
             }
             :last-child{
                 margin-right: 0.28rem;
             }
             .voice_icon{
-                width: 0.9rem;
+                width: 0.6rem;
                 // height: 0.9rem;
                 display: inline-block;
                 vertical-align: sub;
+                margin-right: 0;
+            }
+            .delete{
+                font-size: 0.3rem;
+                font-family: Microsoft YaHei;
+                font-weight: 400;
+                color: #FFFFFF;
+                margin-left: 0.28rem;
             }
         }
     }

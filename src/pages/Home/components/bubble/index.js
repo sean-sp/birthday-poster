@@ -3,6 +3,7 @@ import ReactSeamlessScroll from 'react-seamless-scroll';
 import { VoiceSvgComponent } from '../svg'
 // import wx from 'weixin-js-sdk';
 import './index.scss';
+import avatar from '../../../../static/images/bg1.png'
 
 let voiceId = '';
 
@@ -31,18 +32,23 @@ const Bubble = (props) => {
         }
     }
 
+    const deleteTap = () =>{
+        
+    }
+
     return (
         <div className="bubble_box">
-            <ReactSeamlessScroll speed={30} style={{ width: '4rem', height: '12rem' }}>
+            <ReactSeamlessScroll speed={30} style={{ width: '5rem', height: '3rem' }}>
                 <div className="bubble_item">
                     {
                         commentsList.map((item, index) => (
                             <div key={index} onClick={() => onCommentTap(item)}>
-                                <span>{item.name}:</span>
+                                <img className='avatar' src={avatar}></img>
+                                <span className="nickname">{item.name}:</span>
                                 {
                                     item.type === 'text' ? <span>{item.content}</span> : <span className='voice_icon'><VoiceSvgComponent /></span>
                                 }
-
+                                <span className='delete' onClick={() => deleteTap(item)} >x</span>
                             </div>
                         ))
                     }

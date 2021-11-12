@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { Image,Button } from 'react-vant';
 import wx from 'weixin-js-sdk';
-import { Image, Button } from 'react-vant';
 import Comments from './components/comments';
 import Bubble from './components/bubble';
+import Create from './components/create'
 import bell from '../../static/audio/bell.mp3';
 import birthday from '../../static/audio/birthday.mp3';
 // import { request } from '../../utils';
@@ -29,7 +30,7 @@ const dataList = [
     name: '小的文',
     content: birthday,
     type: 'voice'
-  },
+  }
 ]
 
 const Home = () => {
@@ -110,7 +111,8 @@ const Home = () => {
 
   return (
     <div className="content">
-      <header>BIRTHDAY STAR</header>
+      {/* <header>BIRTHDAY STAR</header> */}
+      <Create />
       <Bubble commentsList={commentsList} />
       <Comments
         sendCommentsCb={sendCommentsCb}
