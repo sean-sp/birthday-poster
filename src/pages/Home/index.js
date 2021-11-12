@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Image,Button } from 'react-vant';
 import wx from 'weixin-js-sdk';
+import { Image, Toast } from 'react-vant';
 import Comments from './components/comments';
 import Bubble from './components/bubble';
 import Create from './components/create'
 import bell from '../../static/audio/bell.mp3';
 import birthday from '../../static/audio/birthday.mp3';
-// import { request } from '../../utils';
-// import APIS from '../../configs';
+import { request } from '../../utils';
+import APIS from '../../configs';
 import './index.scss';
 
 const dataList = [
@@ -34,15 +34,17 @@ const dataList = [
 ]
 
 const Home = () => {
+  const [detail, setDetail] = useState({});
   const [commentsList, setCommentsList] = useState(dataList);
   const [imgLocalData, setImgLocalData] = useState('');
 
   useEffect(() => {
-    // request.get(APIS.detail, { recordId: 1 }).then((res) => {
-    //   console.log(res)
-    // }).catch((err) => {
-    //   console.log(err)
-    // })
+    request.get(APIS.detail, { recordId: 1 }).then((res) => {
+      const detail = res.data || {};
+      setDetail(detail);
+    }).catch((err) => {
+      Toast(err.msg);
+    })
   }, []);
 
   useEffect(() => {
@@ -63,7 +65,7 @@ const Home = () => {
     });
     // wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
     // });
-  }, [])
+  }, []);
 
   const sendCommentsCb = (comment) => {
     setCommentsList([
@@ -111,16 +113,22 @@ const Home = () => {
 
   return (
     <div className="content">
-      {/* <header>BIRTHDAY STAR</header> */}
       <Create />
-      <Bubble commentsList={commentsList} />
+      {/* <Bubble commentsList={commentsList} />
       <Comments
         sendCommentsCb={sendCommentsCb}
         uploadImg={uploadImg}
         sendVoice={sendVoice}
       />
-      {imgLocalData && <Image width="2rem" height="2rem" round src={imgLocalData} errorIcon={<div>加载失败</div>} />}
-    </div>
+      {imgLocalData && <Image width="2rem" height="2rem" round src={imgLocalData} errorIcon={<div>加载失败</div>} />} */}
+      <audio
+        src={detail.backgroundMusicUrl}
+        autoPlay
+        loop
+      >
+        Your browser does not support the <code>audio</code> element.
+      </audio>
+    </div >
   )
 }
 

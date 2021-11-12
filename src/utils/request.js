@@ -16,7 +16,7 @@ class Request {
   }
 
   handleResult = (data) => {
-    if (data.code === 200) {
+    if (data.code === 0) {
       return data;
     }
     return Promise.reject(data.msg);
