@@ -137,11 +137,16 @@
         padding-bottom: 0.1rem;
         margin: 0 0.31rem;
     }
-    .sticker_item{
+    .sticker_item,.sticker_active{
         margin-right: 0.08rem;
+        border: 1px dashed transparent;
         img{
             width: 1.62rem;
             height: 2.92rem;
+            vertical-align: sub;
         }
+    }
+    .sticker_active{
+        border-color:#333333;
     }
 }

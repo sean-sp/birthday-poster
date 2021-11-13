@@ -86,7 +86,7 @@ const Create = (props) => {
     }
 
     return (
-        <div className="create_box" style={{background: active == 1 ? 'linear-gradient(-55deg, #9DB6CF, #8AA2BD)' : active == 2 ? 'linear-gradient(-55deg, #A2A2AB, #C7C8D3)' :active == 3 ? 'linear-gradient(-55deg, #F0BCC0, #F2B8BD)' :'linear-gradient(-55deg, #9B9BA7, #BBB9C7);'}}>
+        <div className="create_box" style={{background: active == 1 ? 'linear-gradient(-55deg, #9DB6CF, #8AA2BD)' : active == 2 ? 'linear-gradient(-55deg, #A2A2AB, #C7C8D3)' :active == 3 ? 'linear-gradient(-55deg, #F0BCC0, #F2B8BD)' :'linear-gradient(-55deg, #9B9BA7, #BBB9C7)'}}>
             <div className={isShow ? 'has_padding':''}>
                 <div className="top_box">
                     <img  className="top_bg" src={active == 1 ? topLan : active == 2 ? topHui :active == 3 ? topHong :topHei}></img>
@@ -125,7 +125,7 @@ const Create = (props) => {
                     <div className="sticker_list">
                     {
                         stickerList.map((item,index)=>(
-                            <div key={index} className="sticker_item" onClick={()=>changeSticker(item)}>
+                            <div key={index} className={active === item.key ? 'sticker_active' : 'sticker_item'} onClick={()=>changeSticker(item)}>
                                 <img src={item.img}></img>
                             </div>
                         ))
