@@ -68,7 +68,7 @@ const Create = (props) => {
 
     //展示主页或创建样式
     useEffect(() => {
-        setShow(true)
+        // setShow(false)
     }, []);
 
     const changeSticker = (val) =>{
@@ -101,7 +101,8 @@ const Create = (props) => {
                         </div>
                     }
                 </div>
-                <div className="footer_box" style={active == 1 ? footer_lan : active == 2 ? footer_hui :active == 3 ? footer_hong :footer_hei}>
+                {/* style={active == 1 ? footer_lan : active == 2 ? footer_hui :active == 3 ? footer_hong :footer_hei}> */}
+                <div className="footer_box" >
                     <div className="footer_info">
                         <span><img src={logo}></img></span>
                         <span>|</span>
