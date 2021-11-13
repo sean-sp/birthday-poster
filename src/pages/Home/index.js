@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { Image,Button } from 'react-vant';
 import wx from 'weixin-js-sdk';
@@ -113,8 +114,8 @@ const Home = () => {
   return (
     <div className="content">
       {/* <header>BIRTHDAY STAR</header> */}
-      <Content />
-      {/* <Create /> */}
+      {/* <Content /> */}
+      <Create />
       {/* <Bubble commentsList={commentsList} />
       <Comments
         sendCommentsCb={sendCommentsCb}

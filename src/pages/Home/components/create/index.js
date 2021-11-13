@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import './index.scss';
 
@@ -102,7 +103,7 @@ const Create = (props) => {
                     }
                 </div>
                 {/* style={active == 1 ? footer_lan : active == 2 ? footer_hui :active == 3 ? footer_hong :footer_hei}> */}
-                <div className="footer_box" >
+                {/* <div className="footer_box" >
                     <div className="footer_info">
                         <span><img src={logo}></img></span>
                         <span>|</span>
@@ -110,8 +111,8 @@ const Create = (props) => {
                         <span>|</span>
                         <span>2021</span>
                     </div>
-                    {/* <div className="footer_desc">版权</div> */}
-                </div>
+                    <div className="footer_desc">版权</div>
+                </div> */}
             </div>
             {
                 isShow ? 
