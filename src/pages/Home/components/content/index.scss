@@ -1,0 +1,82 @@
+.content_box{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    // background: linear-gradient(-55deg, #A2A2AB, #C7C8D3);
+    .share_icon{
+        width: 0.6rem;
+        height: 0.6rem;
+        position: absolute;
+        top:0.26rem;
+        right:0.26rem;
+    }
+    .top_box{
+        width: 100%;
+        height: 2.1rem;
+        position: relative;
+    }
+    .top_bg{
+        width: 100%;
+        height: 100%;
+    }
+    .top_title{
+        width: 5.83rem;
+        position: absolute;
+        top:0.83rem;
+        left:50%;
+        transform: translateX(-50%);
+    }
+    .main_box{
+        width: 100%;
+        height: 9.47rem;
+        position: relative;
+        overflow: hidden;
+    }
+    .main_kuang{
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        position: absolute;
+        top:0;
+        left: 0;
+    }
+    .avatar_view{
+        position: absolute;
+        top:0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+    .footer_box{
+        width: 100%;
+        height: 1.23rem;
+        font-size: 0.2rem;
+        font-family: Microsoft YaHei;
+        font-weight: 400;
+        color: #fff;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        // background: url(../../../../static/images/footer_hei.png) no-repeat;
+        // background-size: 100%;
+        .footer_info{
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding:0.43rem 0;
+        }
+        img{
+            width: 1.7rem;
+            height: 0.3rem;
+        }
+        span{
+            display: inline-block;
+        }
+        .footer_desc{
+            width: 100%;
+            text-align: center;
+            padding-bottom: 0.43rem;
+        }
+    }
+}

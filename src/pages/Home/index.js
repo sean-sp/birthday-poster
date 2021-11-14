@@ -1,9 +1,11 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import wx from 'weixin-js-sdk';
 import { Image, Toast } from 'react-vant';
 import Comments from './components/comments';
 import Bubble from './components/bubble';
 import Create from './components/create'
+import Content from './components/content'
 import bell from '../../static/audio/bell.mp3';
 import birthday from '../../static/audio/birthday.mp3';
 import { request } from '../../utils';
@@ -113,14 +115,16 @@ const Home = () => {
 
   return (
     <div className="content">
+      {/* <header>BIRTHDAY STAR</header> */}
+      {/* <Content /> */}
       <Create />
       {/* <Bubble commentsList={commentsList} />
       <Comments
         sendCommentsCb={sendCommentsCb}
         uploadImg={uploadImg}
         sendVoice={sendVoice}
-      />
-      {imgLocalData && <Image width="2rem" height="2rem" round src={imgLocalData} errorIcon={<div>加载失败</div>} />} */}
+      /> */}
+      {imgLocalData && <Image width="2rem" height="2rem" round src={imgLocalData} errorIcon={<div>加载失败</div>} />}
       <audio
         src={detail.backgroundMusicUrl}
         autoPlay

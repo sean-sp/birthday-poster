@@ -43,7 +43,7 @@ const Bubble = (props) => {
                     {
                         commentsList.map((item, index) => (
                             <div key={index} onClick={() => onCommentTap(item)}>
-                                <img className='avatar' src={avatar}></img>
+                                <img className='avatar' src={avatar} alt="avatar"></img>
                                 <span className="nickname">{item.name}:</span>
                                 {
                                     item.type === 'text' ? <span>{item.content}</span> : <span className='voice_icon'><VoiceSvgComponent /></span>
