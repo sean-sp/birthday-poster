@@ -28,6 +28,8 @@ import footerHui from '../../../../static/images/footer_hui.png'
 import footerLan from '../../../../static/images/footer_lan.png'
 import footerHong from '../../../../static/images/footer_hong.png'
 
+import messageIcon from '../../../../static/images/message_icon.png'
+
 const footer_hei = {
     background: `url(${footerHei}) no-repeat`,
 };
@@ -102,6 +104,7 @@ const Create = (props) => {
                         </div>
                     }
                 </div>
+                <img className="message" src={messageIcon} />
                 {/* style={active == 1 ? footer_lan : active == 2 ? footer_hui :active == 3 ? footer_hong :footer_hei}> */}
                 {/* <div className="footer_box" >
                     <div className="footer_info">
