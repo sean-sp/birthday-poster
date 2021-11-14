@@ -34,18 +34,20 @@ const dataList = [
     },
     {
         name: 'flying',
-        content: '生日快乐',
-        type: 'text'
+        content: topLan,
+        type: 'img'
     },
     {
         name: '大的文',
         content: bell,
-        type: 'voice'
+        type: 'voice',
+        id:223
     },
     {
         name: '小的文',
         content: birthday,
-        type: 'voice'
+        type: 'voice',
+        id:224
     }
 ];
 
@@ -60,7 +62,7 @@ const Content = (props) => {
             const data = res.data || {};
             const { birthdayInfoDTO, birthdayWishDTOList } = data;
             setDetail(birthdayInfoDTO || {});
-            setCommentsList(birthdayWishDTOList || []);
+            // setCommentsList(birthdayWishDTOList || []);
         }).catch((err) => {
             Toast(err.msg);
         })

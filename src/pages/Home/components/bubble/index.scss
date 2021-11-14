@@ -40,6 +40,19 @@
                 display: inline-block;
                 vertical-align: sub;
                 margin-right: 0;
+                img{
+                    width: 0.5rem;
+                    height: 0.5rem;
+                    vertical-align: sub;
+                    margin-right: 0;
+                }
+            }
+            .bubble_img{
+                width: 0.6rem;
+                height: 0.9rem;
+                display: inline-block;
+                vertical-align: middle;
+                margin-right: 0;
             }
             .delete{
                 font-size: 0.3rem;
