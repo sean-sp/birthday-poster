@@ -80,3 +80,79 @@
         }
     }
 }
+
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3){
+    .content_box .top_box{
+        height: 2.1rem;
+    }
+    .content_box .top_title{
+        top: 0.8rem;
+    }
+    .content_box .main_box{
+        height: 9.4rem;
+    }
+}
+// // iPhoneXR iPhone11
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+    .content_box .top_box{
+        height: 2.1rem;
+    }
+    .content_box .top_title{
+        top: 0.8rem;
+    }
+    .content_box .main_box{
+        height: 9.4rem;
+    }
+}
+
+// iPhone11Pro
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+    .content_box .top_box{
+        height: 2.1rem;
+    }
+    .content_box .top_title{
+        top: 0.8rem;
+    }
+    .content_box .main_box{
+        height: 9.4rem;
+    }
+}
+
+// iPhoneXSMax
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+    .content_box .top_box{
+        height: 2.1rem;
+    }
+    .content_box .top_title{
+        top: 0.8rem;
+    }
+    .content_box .main_box{
+        height: 9.4rem;
+    }
+}
+
+// HUAWEI P40
+@media only screen and (device-width: 360px) and (device-height: 780px) and (-webkit-device-pixel-ratio: 3) {
+    .content_box .top_box{
+        height: 2.1rem;
+    }
+    .content_box .top_title{
+        top: 0.8rem;
+    }
+    .content_box .main_box{
+        height: 9.4rem;
+    }
+}
+
+// HUAWEI HONOR V30
+@media only screen and (device-width: 360px) and (device-height: 800px) and (-webkit-device-pixel-ratio: 3) {
+    .content_box .top_box{
+        height: 2.1rem;
+    }
+    .content_box .top_title{
+        top: 0.8rem;
+    }
+    .content_box .main_box{
+        height: 9.4rem;
+    }
+}

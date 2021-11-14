@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useState } from 'react';
-import { Toast } from 'react-vant';
+import { Toast, Field, Icon } from 'react-vant';
 import wx from 'weixin-js-sdk';
 import { request } from '../../../../utils';
 import APIS from '../../../../configs';
@@ -31,6 +31,9 @@ import footerHei from '../../../../static/images/footer_hei.png'
 import footerHui from '../../../../static/images/footer_hui.png'
 import footerLan from '../../../../static/images/footer_lan.png'
 import footerHong from '../../../../static/images/footer_hong.png'
+
+import messageIcon from '../../../../static/images/message_icon.png'
+import closeIcon from '../../../../static/images/close_icon.png'
 
 const footer_hei = {
     background: `url(${footerHei}) no-repeat`,
@@ -70,6 +73,7 @@ const Create = (props) => {
 
     const [active, setActive] = useState(1);
     const [avatar, setAvatar] = useState('')
+    const [showMessage, setShowMessage] = useState(false)
 
     const changeSticker = (val) => {
         setActive(val.key)
@@ -82,6 +86,18 @@ const Create = (props) => {
         } else {
             setActive(1)
         }
+    }
+
+    //留言
+    const message = () =>{
+        setShowMessage(!showMessage)
+    }
+
+    const close = () =>{
+        setShowMessage(false)
+    }
+    const submit = ()=>{
+        setShowMessage(false)
     }
 
     const previewImage = () => {
@@ -160,6 +176,9 @@ const Create = (props) => {
                             </div>
                     }
                 </div>
+                <div className="message" style={{background: active == 1 ? '#8499B0' : active == 2 ? '#AEB1BC' : active == 3 ? '#D99FA6' : '#A9A7B4'}} onClick={message} >
+                    <Icon name="chat-o" color="#fff" size="1rem"/>
+                </div>
                 {/* style={active == 1 ? footer_lan : active == 2 ? footer_hui :active == 3 ? footer_hong :footer_hei}> */}
                 {/* <div className="footer_box" >
                     <div className="footer_info">
@@ -172,6 +191,23 @@ const Create = (props) => {
                     <div className="footer_desc">版权</div>
                 </div> */}
             </div>
+            {
+                showMessage ? 
+                <div className='message_box'>
+                    <div className="message_title">祝福留言</div>
+                    <img className="message_close" src={closeIcon} onClick={close} ></img>
+                    <Field
+                        className="text"
+                        rows="2"
+                        autosize
+                        type="textarea"
+                        maxlength="50"
+                        placeholder="请输入你的留言"
+                        show-word-limit
+                    />
+                    <div className="message_sure" style={{background: active == 1 ? '#8499B0' : active == 2 ? '#AEB1BC' : active == 3 ? '#D99FA6' : '#A9A7B4'}} onClick={submit}>确定</div>
+                </div>:null
+            }
             <div className='sticker_box'>
                 <div className='sticker_header'>
                     <img src={backImg} onClick={back}></img>
