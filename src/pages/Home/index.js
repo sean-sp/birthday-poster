@@ -1,137 +1,78 @@
 /* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import wx from 'weixin-js-sdk';
-import { Image, Toast } from 'react-vant';
-import Comments from './components/comments';
-import Bubble from './components/bubble';
+import qs from 'qs';
+import { Toast } from 'react-vant';
 import Create from './components/create'
 import Content from './components/content'
-import bell from '../../static/audio/bell.mp3';
-import birthday from '../../static/audio/birthday.mp3';
 import { request } from '../../utils';
 import APIS from '../../configs';
 import './index.scss';
 
-const dataList = [
-  {
-    name: '爱德华兹',
-    content: '生日快乐',
-    type: 'text'
-  },
-  {
-    name: 'flying',
-    content: '生日快乐',
-    type: 'text'
-  },
-  {
-    name: '大的文',
-    content: bell,
-    type: 'voice'
-  },
-  {
-    name: '小的文',
-    content: birthday,
-    type: 'voice'
-  }
-]
+const myConfig = {
+  debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+  appId: 'wxcdb66d9a27951efe', // 必填，公众号的唯一标识
+  timestamp: '1636877607', // 必填，生成签名的时间戳
+  nonceStr: 'test', // 必填，生成签名的随机串
+  signature: '3ed70a81c1bd5523c7ceaf892ccd335c66025018',// 必填，签名
+  jsApiList: [
+    'checkJsApi',
+    'chooseImage',
+    'getLocalImgData',
+    'uploadImage',
+    'startRecord',
+    'stopRecord',
+    'onVoiceRecordEnd'
+  ] // 必填，需要使用的JS接口列表
+};
 
 const Home = () => {
-  const [detail, setDetail] = useState({});
-  const [commentsList, setCommentsList] = useState(dataList);
-  const [imgLocalData, setImgLocalData] = useState('');
+  const [userInfo, setUserInfo] = useState({});
+  const [createShow, setCreateShow] = useState(true);
+  const [recordId, setRecord] = useState(1);
 
   useEffect(() => {
-    request.get(APIS.detail, { recordId: 1 }).then((res) => {
-      const detail = res.data || {};
-      setDetail(detail);
+    const queryList = window.location.href.split('?');
+    const queryStr = queryList[1];
+    const { x_stream_id } = qs.parse(queryStr, { ignoreQueryPrefix: true });
+    if (!x_stream_id) {
+      wx.miniProgram.navigateTo({ url: '/pagesB/user/loginByPhone/index?back=true&notPass=1' });
+      return;
+    }
+    request.get(APIS.getJsConfig, { xStreamId: x_stream_id }).then((res) => {
+      const wxConfig = JSON.parse(res.msg).msg;
+      // console.log(wxConfig)
+      wx.config(myConfig);
+      wx.ready(() => {
+        const isMiniProgram = /miniProgram/i.test(navigator.userAgent.toLowerCase());
+        // console.log(isMiniProgram);
+      });
+    }).catch((err) => {
+      Toast(err.msg);
+    });
+    request.get(APIS.getUserInfo, { xStreamId: x_stream_id }).then((res) => {
+      setUserInfo(JSON.parse(res.msg).msg);
     }).catch((err) => {
       Toast(err.msg);
     })
   }, []);
 
-  useEffect(() => {
-    wx.config({
-      debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-      appId: 'wxcdb66d9a27951efe', // 必填，公众号的唯一标识
-      timestamp: '1636543360', // 必填，生成签名的时间戳
-      nonceStr: 'test', // 必填，生成签名的随机串
-      signature: '8d84490c6aaa7f716d771d5a67de2a2db0312446',// 必填，签名
-      jsApiList: [
-        'checkJsApi',
-        'chooseImage',
-        'getLocalImgData',
-        'startRecord',
-        'stopRecord',
-        'onVoiceRecordEnd'
-      ] // 必填，需要使用的JS接口列表
-    });
-    // wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
-    // });
-  }, []);
-
-  const sendCommentsCb = (comment) => {
-    setCommentsList([
-      ...commentsList,
-      {
-        name: `海马体${parseInt(Math.random() * 10)}`,
-        content: comment,
-        type: 'text'
-      }
-    ])
+  const closeCreate = () => {
+    setCreateShow(false);
   }
 
-  const sendVoice = (voiceLocalId) => {
-    setCommentsList([
-      ...commentsList,
-      {
-        name: `海马体${parseInt(Math.random() * 10)}`,
-        content: voiceLocalId,
-        type: 'voice'
-      }
-    ])
-  }
-
-  const uploadImg = () => {
-    wx.chooseImage({
-      count: 1, // 默认9
-      sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-      sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-      success: (res) => {
-        const imgLocalIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-        if (!window.__wxjs_is_wkwebview) {
-          setImgLocalData(imgLocalIds[0]);
-          return;
-        }
-        wx.getLocalImgData({
-          localId: imgLocalIds[0], // 图片的localID
-          success: (res) => {
-            const localData = res.localData; // localData是图片的base64数据，可以用img标签显示
-            setImgLocalData(localData);
-          }
-        });
-      }
-    });
+  const setRecordIdCb = (recordId) => {
+    setRecord(recordId);
   }
 
   return (
     <div className="content">
-      {/* <header>BIRTHDAY STAR</header> */}
-      {/* <Content /> */}
-      <Create />
-      {/* <Bubble commentsList={commentsList} />
-      <Comments
-        sendCommentsCb={sendCommentsCb}
-        uploadImg={uploadImg}
-        sendVoice={sendVoice}
-      /> */}
-      {imgLocalData && <Image width="2rem" height="2rem" round src={imgLocalData} errorIcon={<div>加载失败</div>} />}
-      <audio
-        src={detail.backgroundMusicUrl}
-        autoPlay
-        loop
-      >
-        Your browser does not support the <code>audio</code> element.
-      </audio>
+      {createShow ? <Create
+        userInfo={userInfo}
+        closeCreate={closeCreate}
+        setRecordIdCb={setRecordIdCb}
+      /> :
+        <Content recordId={recordId} />}
     </div >
   )
 }

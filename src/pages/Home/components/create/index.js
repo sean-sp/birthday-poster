@@ -1,5 +1,9 @@
 /* eslint-disable */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Toast } from 'react-vant';
+import wx from 'weixin-js-sdk';
+import { request } from '../../../../utils';
+import APIS from '../../../../configs';
 import './index.scss';
 
 import titleHui from '../../../../static/images/title_hui.png'
@@ -41,65 +45,119 @@ const footer_hong = {
     background: `url(${footerHong}) no-repeat`,
 };
 
+let localId = '';
 
 const Create = (props) => {
-    console.log(props)
+    const { userInfo, closeCreate, setRecordIdCb } = props;
     const stickerList = [
         {
-            key:1,
-            img:lanImg
+            key: 1,
+            img: lanImg
         },
         {
-            key:2,
-            img:huiImg
+            key: 2,
+            img: huiImg
         },
         {
-            key:3,
-            img:hongImg
+            key: 3,
+            img: hongImg
         },
         {
-            key:4,
-            img:heiImg
+            key: 4,
+            img: heiImg
         }
     ]
 
     const [active, setActive] = useState(1);
-    const [avatar, setAvatar] = useState('');
-    const [isShow, setShow] = useState(true)
+    const [avatar, setAvatar] = useState('')
 
-    //展示主页或创建样式
-    useEffect(() => {
-        // setShow(false)
-    }, []);
-
-    const changeSticker = (val) =>{
+    const changeSticker = (val) => {
         setActive(val.key)
     }
 
     //返回选择
-    const back = () =>{
-        if(avatar){
+    const back = () => {
+        if (avatar) {
             setAvatar('')
-        }else{
+        } else {
             setActive(1)
         }
     }
 
+    const previewImage = () => {
+        wx.chooseImage({
+            count: 1, // 默认9
+            sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+            sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+            success: (res) => {
+                const imgLocalIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+                localId = imgLocalIds[0];
+                if (!window.__wxjs_is_wkwebview) {
+                    setAvatar(localId);
+                    return;
+                }
+                wx.getLocalImgData({
+                    localId, // 图片的localID
+                    success: (res) => {
+                        const localData = res.localData; // localData是图片的base64数据，可以用img标签显示
+                        setAvatar(localData);
+                    }
+                });
+            }
+        });
+    }
+
+    const create = () => {
+        if (!avatar) {
+            Toast('请先上传图片');
+            return;
+        }
+        wx.uploadImage({
+            localId, // 需要上传的图片的本地ID，由chooseImage接口获得
+            isShowProgressTips: 1, // 默认为1，显示进度提示
+            success: (res) => {
+                const serverId = res.serverId; // 返回图片的服务器端ID
+                request.get(APIS.uploadFile, { fileType: 1, mediaId: serverId, token: 'token' }).then((res) => {
+                    const posterUrl = res.msg;
+                    const { id, name, avatar } = userInfo;
+                    request.post(APIS.create, { avatar, nickname: name, posterUrl, userId: id, type: active }).then((res) => {
+                        setRecordIdCb(res.recordId)
+                        Toast({
+                            message: '创建成功',
+                            onClose: closeCreate
+                        });
+                    }).catch((err) => {
+                        // Toast(err.msg);
+                        Toast({
+                            message: '创建成功',
+                            onClose: closeCreate
+                        })
+                    })
+                }).catch((err) => {
+                    Toast(err.msg);
+                })
+            }
+        });
+    }
+
     return (
-        <div className="create_box" style={{background: active == 1 ? 'linear-gradient(-55deg, #9DB6CF, #8AA2BD)' : active == 2 ? 'linear-gradient(-55deg, #A2A2AB, #C7C8D3)' :active == 3 ? 'linear-gradient(-55deg, #F0BCC0, #F2B8BD)' :'linear-gradient(-55deg, #9B9BA7, #BBB9C7)'}}>
-            <div className={isShow ? 'has_padding':''}>
+        <div className="create_box" style={{ background: active == 1 ? 'linear-gradient(-55deg, #9DB6CF, #8AA2BD)' : active == 2 ? 'linear-gradient(-55deg, #A2A2AB, #C7C8D3)' : active == 3 ? 'linear-gradient(-55deg, #F0BCC0, #F2B8BD)' : 'linear-gradient(-55deg, #9B9BA7, #BBB9C7)' }}>
+            <div className="has_padding">
                 <div className="top_box">
-                    <img  className="top_bg" src={active == 1 ? topLan : active == 2 ? topHui :active == 3 ? topHong :topHei}></img>
-                    <img  className="top_title" src={titleHui}></img>
+                    <img className="top_bg" src={active == 1 ? topLan : active == 2 ? topHui : active == 3 ? topHong : topHei}></img>
+                    <img className="top_title" src={titleHui}></img>
                 </div>
                 <div className="main_box">
-                    <img className="main_kuang" src={active == 1 ? mainLan : active == 2 ? mainHui :active == 3 ? mainHong :mainHei}></img>
+                    <img className="main_kuang" src={active == 1 ? mainLan : active == 2 ? mainHui : active == 3 ? mainHong : mainHei}></img>
                     {
                         avatar ? <img className="avatar_view" src={avatar}></img> :
-                        <div className="add_avatar" style={{background: active == 1 ? '#8499B0' : active == 2 ? '#AEB1BC' :active == 3 ? '#D99FA6' :'#A9A7B4'}}>
-                            <span className="add_icon">+</span>
-                            <span>添加照片</span>
-                        </div>
+                            <div className="add_avatar"
+                                style={{ background: active == 1 ? '#8499B0' : active == 2 ? '#AEB1BC' : active == 3 ? '#D99FA6' : '#A9A7B4' }}
+                                onClick={previewImage}
+                            >
+                                <span className="add_icon">+</span>
+                                <span>添加照片</span>
+                            </div>
                     }
                 </div>
                 {/* style={active == 1 ? footer_lan : active == 2 ? footer_hui :active == 3 ? footer_hong :footer_hei}> */}
@@ -114,25 +172,22 @@ const Create = (props) => {
                     <div className="footer_desc">版权</div>
                 </div> */}
             </div>
-            {
-                isShow ? 
-                <div className='sticker_box'>
-                    <div className='sticker_header'>
-                        <img src={backImg} onClick={back}></img>
-                        <span>贴纸</span>
-                        <img src={sureImg}></img>
-                    </div>
-                    <div className="sticker_list">
+            <div className='sticker_box'>
+                <div className='sticker_header'>
+                    <img src={backImg} onClick={back}></img>
+                    <span>贴纸</span>
+                    <img src={sureImg} onClick={create}></img>
+                </div>
+                <div className="sticker_list">
                     {
-                        stickerList.map((item,index)=>(
-                            <div key={index} className={active === item.key ? 'sticker_active' : 'sticker_item'} onClick={()=>changeSticker(item)}>
+                        stickerList.map((item, index) => (
+                            <div key={index} className={active === item.key ? 'sticker_active' : 'sticker_item'} onClick={() => changeSticker(item)}>
                                 <img src={item.img}></img>
                             </div>
                         ))
                     }
-                    </div>
-                </div> : null
-            }
+                </div>
+            </div>
         </div>
     )
 }

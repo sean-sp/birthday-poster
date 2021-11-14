@@ -33,6 +33,8 @@
         margin-top: -1px;
         position: relative;
         overflow: hidden;
+        border-bottom-left-radius: 0.2rem;
+        border-bottom-right-radius: 0.2rem;
     }
     .add_avatar{
         position: absolute;
@@ -48,6 +50,7 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
+        z-index: 3;
     }
     .add_icon{
         font-size: 0.5rem;
@@ -113,6 +116,7 @@
         background: #fff;
         border-top-left-radius: 0.3rem;
         border-top-right-radius: 0.3rem;
+        z-index: 3;
     }
     .sticker_header{
         height: 0.67rem;
