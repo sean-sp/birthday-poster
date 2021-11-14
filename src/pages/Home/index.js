@@ -40,18 +40,22 @@ const Home = () => {
       return;
     }
     request.get(APIS.getJsConfig, { xStreamId: x_stream_id }).then((res) => {
-      const wxConfig = JSON.parse(res.msg).msg;
+      const wxConfig = JSON.parse(res.data).msg;
       // console.log(wxConfig)
       wx.config(myConfig);
       wx.ready(() => {
         const isMiniProgram = /miniProgram/i.test(navigator.userAgent.toLowerCase());
         // console.log(isMiniProgram);
       });
+      wx.error((res) => {
+        // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+        console.log(res);
+      });
     }).catch((err) => {
       Toast(err.msg);
     });
     request.get(APIS.getUserInfo, { xStreamId: x_stream_id }).then((res) => {
-      setUserInfo(JSON.parse(res.msg).msg);
+      setUserInfo(JSON.parse(res.data).msg);
     }).catch((err) => {
       Toast(err.msg);
     })
@@ -72,7 +76,7 @@ const Home = () => {
         closeCreate={closeCreate}
         setRecordIdCb={setRecordIdCb}
       /> :
-        <Content recordId={recordId} />}
+        <Content recordId={recordId} userInfo={userInfo} />}
     </div >
   )
 }

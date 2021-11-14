@@ -52,10 +52,9 @@ const dataList = [
 ];
 
 const Content = (props) => {
-    const { recordId } = props;
+    const { recordId, userInfo } = props;
     const [detail, setDetail] = useState({});
     const [commentsList, setCommentsList] = useState(dataList);
-    const [active] = useState(1);
 
     useEffect(() => {
         request.get(APIS.getDetail, { recordId }).then((res) => {
@@ -69,25 +68,36 @@ const Content = (props) => {
     }, [])
 
     const sendCommentsCb = (comment) => {
-        setCommentsList([
-            ...commentsList,
-            {
-                name: `海马体${parseInt(Math.random() * 10)}`,
-                content: comment,
-                type: 'text'
-            }
-        ])
+        const { id, name, avatar } = userInfo;
+        request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishContent: comment }).then((res) => {
+            request.post(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
+                console.log(res)
+            })
+        }).catch((err) => {
+            Toast(err.msg);
+        })
     }
 
     const sendVoice = (voiceLocalId) => {
-        setCommentsList([
-            ...commentsList,
-            {
-                name: `海马体${parseInt(Math.random() * 10)}`,
-                content: voiceLocalId,
-                type: 'voice'
+        wx.uploadVoice({
+            localId: voiceLocalId, // 需要上传的音频的本地ID，由stopRecord接口获得
+            isShowProgressTips: 1, // 默认为1，显示进度提示
+            success: (res) => {
+                const serverId = res.serverId; // 返回音频的服务器端ID
+                request.get(APIS.uploadFile, { fileType: 2, mediaId: serverId, token: 'token' }).then((res) => {
+                    const { id, name, avatar } = userInfo;
+                    request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishVoiceUrl: res.data }).then((res) => {
+                        request.post(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
+                            console.log(res)
+                        })
+                    }).catch((err) => {
+                        Toast(err.msg);
+                    })
+                }).catch((err) => {
+                    Toast(err.msg);
+                })
             }
-        ])
+        });
     }
 
     const uploadImg = () => {
@@ -103,7 +113,14 @@ const Content = (props) => {
                     success: (res) => {
                         const serverId = res.serverId; // 返回图片的服务器端ID
                         request.get(APIS.uploadFile, { fileType: 1, mediaId: serverId, token: 'token' }).then((res) => {
-                            console.log(res);
+                            const { id, name, avatar } = userInfo;
+                            request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishPicUrl: res.data }).then((res) => {
+                                request.post(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
+                                    console.log(res)
+                                })
+                            }).catch((err) => {
+                                Toast(err.msg);
+                            })
                         }).catch((err) => {
                             Toast(err.msg);
                         })
@@ -113,7 +130,8 @@ const Content = (props) => {
         });
     }
 
-    const { posterUrl, backgroundMusicUrl } = detail;
+    const { posterUrl, backgroundMusicUrl, modeType } = detail;
+    const active = modeType + 1;
 
     return (
         <div className="content_box" style={{ background: active === 1 ? 'linear-gradient(55deg, #9DB6CF, #607798)' : active === 2 ? 'linear-gradient(-55deg, #A2A2AB, #92929B)' : active === 3 ? 'linear-gradient(-55deg, #F0BCC0, #934A55)' : 'linear-gradient(-55deg, #9B9BA7, #8A8793);' }}>
