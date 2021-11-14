@@ -28,7 +28,7 @@ const myConfig = {
 
 const Home = () => {
   const [userInfo, setUserInfo] = useState({});
-  const [createShow, setCreateShow] = useState(false);
+  const [createShow, setCreateShow] = useState(true);
   const [recordId, setRecord] = useState(1);
 
   useEffect(() => {
