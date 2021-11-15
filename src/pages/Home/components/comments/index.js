@@ -111,6 +111,7 @@ const Comments = (props) => {
 
   const sendComments = () => {
     if (inputVal) {
+      setInputVal('');
       sendCommentsCb(inputVal);
     }
   }
@@ -125,7 +126,7 @@ const Comments = (props) => {
         {voiceBtnClickOff ? '松开结束' : '按住说话'}
       </div> :
         <div className="text-input">
-          <input placeholder="请留下您的祝福..." onInput={onCommentsInput} />
+          <input placeholder="请留下您的祝福..." onInput={onCommentsInput} value={inputVal} />
         </div>}
       <div className="voice-svg" onClick={onVoiceClick}>
         {voiceBtnVisible ? <KeyboardSvgComponent /> : <VoiceSvgComponent />}

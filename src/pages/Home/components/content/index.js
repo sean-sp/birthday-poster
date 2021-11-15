@@ -25,29 +25,17 @@ import mainHui from '../../../../static/images/main_hui.png'
 import mainHei from '../../../../static/images/main_hei.png'
 import mainHong from '../../../../static/images/main_hong.png'
 import mainLan from '../../../../static/images/main_lan.png'
+import avatar from '../../../../static/images/bg1.png'
 
 const dataList = [
     {
-        name: '爱德华兹',
-        content: '生日快乐',
-        type: 'text'
-    },
-    {
-        name: 'flying',
-        content: topLan,
-        type: 'img'
-    },
-    {
-        name: '大的文',
-        content: bell,
-        type: 'voice',
-        id:223
-    },
-    {
-        name: '小的文',
-        content: birthday,
-        type: 'voice',
-        id:224
+        avatar,
+        nickname: '爱德华兹',
+        wishContent: '生日快乐',
+        wishType: 'text',
+        recordId: 2233,
+        wishPicUrl: '',
+        wishVoiceUrl: ''
     }
 ];
 
@@ -55,23 +43,31 @@ const Content = (props) => {
     const { recordId, userInfo } = props;
     const [detail, setDetail] = useState({});
     const [commentsList, setCommentsList] = useState(dataList);
+    const [isOneself, setIsOneself] = useState(false);
 
     useEffect(() => {
         request.get(APIS.getDetail, { recordId }).then((res) => {
             const data = res.data || {};
-            const { birthdayInfoDTO, birthdayWishDTOList } = data;
+            const { birthdayInfoDTO, birthdayWishDTOList, isOneself } = data;
             setDetail(birthdayInfoDTO || {});
-            // setCommentsList(birthdayWishDTOList || []);
+            setIsOneself(isOneself);
+            setCommentsList(birthdayWishDTOList || []);
         }).catch((err) => {
             Toast(err.msg);
         })
-    }, [])
+    }, []);
+
+    const deleteComment = (item) => {
+        const index = commentsList.findIndex((comment) => comment.id === item.id);
+        commentsList.splice(index, 1);
+        setCommentsList([...commentsList]);
+    }
 
     const sendCommentsCb = (comment) => {
         const { id, name, avatar } = userInfo;
-        request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishContent: comment }).then((res) => {
-            request.post(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
-                console.log(res)
+        request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishContent: comment, wishType: 'text' }).then(() => {
+            request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
+                setCommentsList(res.data || []);
             })
         }).catch((err) => {
             Toast(err.msg);
@@ -86,9 +82,9 @@ const Content = (props) => {
                 const serverId = res.serverId; // 返回音频的服务器端ID
                 request.get(APIS.uploadFile, { fileType: 2, mediaId: serverId, token: 'token' }).then((res) => {
                     const { id, name, avatar } = userInfo;
-                    request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishVoiceUrl: res.data }).then((res) => {
-                        request.post(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
-                            console.log(res)
+                    request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishVoiceUrl: res.data, wishType: 'voice' }).then(() => {
+                        request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
+                            setCommentsList(res.data || []);
                         })
                     }).catch((err) => {
                         Toast(err.msg);
@@ -114,9 +110,9 @@ const Content = (props) => {
                         const serverId = res.serverId; // 返回图片的服务器端ID
                         request.get(APIS.uploadFile, { fileType: 1, mediaId: serverId, token: 'token' }).then((res) => {
                             const { id, name, avatar } = userInfo;
-                            request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishPicUrl: res.data }).then((res) => {
-                                request.post(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
-                                    console.log(res)
+                            request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishPicUrl: res.data, wishType: 'img' }).then((res) => {
+                                request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
+                                    setCommentsList(res.data || []);
                                 })
                             }).catch((err) => {
                                 Toast(err.msg);
@@ -134,7 +130,7 @@ const Content = (props) => {
     const active = modeType + 1;
 
     return (
-        <div className="content_box" style={{ background: active === 1 ? 'linear-gradient(55deg, #9DB6CF, #607798)' : active === 2 ? 'linear-gradient(-55deg, #A2A2AB, #92929B)' : active === 3 ? 'linear-gradient(-55deg, #F0BCC0, #934A55)' : 'linear-gradient(-55deg, #9B9BA7, #8A8793);' }}>
+        <div className="content_box" style={{ background: active === 1 ? 'linear-gradient(55deg, #9DB6CF, #607798)' : active === 2 ? 'linear-gradient(-55deg, #A2A2AB, #92929B)' : active === 3 ? 'linear-gradient(-55deg, #F0BCC0, #934A55)' : 'linear-gradient(-55deg, #9B9BA7, #8A8793)' }}>
             <div>
                 <div className="top_box">
                     <img className="top_bg" src={active === 1 ? topLan : active === 2 ? topHui : active === 3 ? topHong : topHei}></img>
@@ -158,7 +154,7 @@ const Content = (props) => {
                     {/* <div className="footer_desc">版权</div> */}
                 </div>
             </div>
-            <Bubble commentsList={commentsList} />
+            <Bubble commentsList={commentsList} isOneself={isOneself} deleteComment={deleteComment} />
             <Comments
                 sendCommentsCb={sendCommentsCb}
                 uploadImg={uploadImg}

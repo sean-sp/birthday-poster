@@ -56,11 +56,12 @@
                 margin-right: 0;
             }
             .delete{
+                display: inline-block;
                 font-size: 0.3rem;
                 font-family: Microsoft YaHei;
                 font-weight: 400;
                 color: #FFFFFF;
-                margin-left: 0.28rem;
+                padding:  0.04rem 0.1rem;
             }
         }
     }

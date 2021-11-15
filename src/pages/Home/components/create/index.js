@@ -137,7 +137,7 @@ const Create = (props) => {
 
     const create = () => {
         if (!avatar) {
-            Toast('请先上传图片');
+            Toast('请先上传照片');
             return;
         }
         wx.uploadImage({
@@ -146,9 +146,13 @@ const Create = (props) => {
             success: (res) => {
                 const serverId = res.serverId; // 返回图片的服务器端ID
                 request.get(APIS.uploadFile, { fileType: 1, mediaId: serverId, token: 'token' }).then((res) => {
-                    const posterUrl = res.msg;
+                    const posterUrl = res.data;
                     const { id, name, avatar } = userInfo;
-                    request.post(APIS.create, { avatar, nickname: name, posterUrl, userId: id, modeType: active - 1, remark: msgValue || undefined }).then((res) => {
+                    request.post(APIS.create, {
+                        avatar, nickname: name, posterUrl, userId: id,
+                        modeType: active - 1, remark: msgValue || undefined,
+                        xStreamId: window.localStorage.getItem('xStreamId')
+                    }).then((res) => {
                         setRecordIdCb(res.data);
                         Toast({
                             message: '创建成功',

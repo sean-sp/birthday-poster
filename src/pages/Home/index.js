@@ -12,23 +12,25 @@ import './index.scss';
 const myConfig = {
   debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
   appId: 'wxcdb66d9a27951efe', // 必填，公众号的唯一标识
-  timestamp: '1636877607', // 必填，生成签名的时间戳
+  timestamp: '1636964029', // 必填，生成签名的时间戳
   nonceStr: 'test', // 必填，生成签名的随机串
-  signature: '3ed70a81c1bd5523c7ceaf892ccd335c66025018',// 必填，签名
+  signature: 'b869d215abd7474fd0cd40e36462804f0c4c22d7',// 必填，签名
   jsApiList: [
     'checkJsApi',
     'chooseImage',
     'getLocalImgData',
     'uploadImage',
+    'previewImage',
     'startRecord',
     'stopRecord',
-    'onVoiceRecordEnd'
+    'onVoiceRecordEnd',
+    'uploadVoice'
   ] // 必填，需要使用的JS接口列表
 };
 
 const Home = () => {
   const [userInfo, setUserInfo] = useState({});
-  const [createShow, setCreateShow] = useState(true);
+  const [isCreate, setIsCreate] = useState(true);
   const [recordId, setRecord] = useState(1);
 
   useEffect(() => {
@@ -39,6 +41,7 @@ const Home = () => {
       wx.miniProgram.navigateTo({ url: '/pagesB/user/loginByPhone/index?back=true&notPass=1' });
       return;
     }
+    window.localStorage.setItem('xStreamId', x_stream_id);
     request.get(APIS.getJsConfig, { xStreamId: x_stream_id }).then((res) => {
       const wxConfig = JSON.parse(res.data).msg;
       // console.log(wxConfig)
@@ -55,14 +58,16 @@ const Home = () => {
       Toast(err.msg);
     });
     request.get(APIS.getUserInfo, { xStreamId: x_stream_id }).then((res) => {
-      setUserInfo(JSON.parse(res.data).msg);
+      const data = JSON.parse(res.data);
+      setUserInfo(data.msg || {});
+      setIsCreate(data.isCreate);
     }).catch((err) => {
-      Toast(err.msg);
+      // Toast(err.msg);
     })
   }, []);
 
   const closeCreate = () => {
-    setCreateShow(false);
+    setIsCreate(false);
   }
 
   const setRecordIdCb = (recordId) => {
@@ -71,12 +76,16 @@ const Home = () => {
 
   return (
     <div className="content">
-      {createShow ? <Create
-        userInfo={userInfo}
-        closeCreate={closeCreate}
-        setRecordIdCb={setRecordIdCb}
-      /> :
-        <Content recordId={recordId} userInfo={userInfo} />}
+      {isCreate ?
+        <Content
+          recordId={recordId}
+          userInfo={userInfo}
+        /> :
+        <Create
+          userInfo={userInfo}
+          closeCreate={closeCreate}
+          setRecordIdCb={setRecordIdCb}
+        />}
     </div >
   )
 }

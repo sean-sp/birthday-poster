@@ -19,7 +19,7 @@ class Request {
     if (data.code === 0) {
       return data;
     }
-    return Promise.reject(data.msg);
+    return Promise.reject(data);
   }
 
   parseQuery = (obj) => {
