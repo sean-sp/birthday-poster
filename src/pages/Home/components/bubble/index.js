@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import { Dialog } from 'react-vant';
 import ReactSeamlessScroll from 'react-seamless-scroll';
 import { VoiceSvgComponent } from '../svg'
 import wx from 'weixin-js-sdk';
@@ -8,7 +9,7 @@ import voiceIcon from '../../../../static/images/voice.gif'
 let voiceId = '';
 
 const Bubble = (props) => {
-    const { commentsList, isOneself, deleteComment } = props;
+    const { commentsList, isOneself, deleteComment, xStreamId } = props;
     const audio = useMemo(() => new Audio(), []);
     const [activeVoice, setActiveVoice] = useState(-1)
 
@@ -28,6 +29,10 @@ const Bubble = (props) => {
             return;
         }
         if (item.wishType === 'img') {
+            if (!xStreamId) {
+                wx.miniProgram.navigateTo({ url: '/pagesB/user/loginByPhone/index?back=true&notPass=1' });
+                return;
+            }
             wx.previewImage({
                 current: item.wishPicUrl, // 当前显示图片的http链接
                 urls: [item.wishPicUrl] // 需要预览的图片http链接列表
@@ -35,10 +40,15 @@ const Bubble = (props) => {
         }
     }
 
-    // const deleteTap = (e, item) => {
-    //     e.stopPropagation();
-    //     deleteComment(item);
-    // }
+    const deleteTap = (e, item) => {
+        e.stopPropagation();
+        Dialog.confirm({
+            title: '删除',
+            message: '确认要删除该条评论？',
+        }).then(() => {
+            deleteComment(item);
+        })
+    }
 
     return (
         <div className="bubble_box">
@@ -52,7 +62,7 @@ const Bubble = (props) => {
                                 {
                                     item.wishType === 'text' ? <span>{item.wishContent}</span> : item.wishType === 'img' ? <img className="bubble_img" src={item.wishPicUrl}></img> : <span className='voice_icon'>{activeVoice === item.recordId ? <img src={voiceIcon}></img> : <VoiceSvgComponent />}</span>
                                 }
-                                {/* {!isOneself && <span className='delete' onClick={(e) => deleteTap(e, item)} >x</span>} */}
+                                {!isOneself && <span className='delete' onClick={(e) => deleteTap(e, item)} >x</span>}
                             </div>
                         ))
                     }

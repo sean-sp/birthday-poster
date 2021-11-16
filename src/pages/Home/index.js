@@ -1,13 +1,14 @@
 /* eslint-disable */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import wx from 'weixin-js-sdk';
-import qs from 'qs';
 import { Toast } from 'react-vant';
 import Create from './components/create'
 import Content from './components/content'
-import { request } from '../../utils';
+import { request, getXStreamIdOrParentId } from '../../utils';
 import APIS from '../../configs';
 import './index.scss';
+
+const shareImg = require('../../static/images/share_img.png').default;
 
 const myConfig = {
   debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -31,39 +32,47 @@ const myConfig = {
 const Home = () => {
   const [userInfo, setUserInfo] = useState({});
   const [isCreate, setIsCreate] = useState(true);
-  const [recordId, setRecord] = useState(1);
+  const [recordId, setRecordId] = useState('');
+  const xStreamId = useMemo(() => getXStreamIdOrParentId(), []);
 
   useEffect(() => {
-    const queryList = window.location.href.split('?');
-    const queryStr = queryList[1];
-    const { x_stream_id } = qs.parse(queryStr, { ignoreQueryPrefix: true });
-    if (!x_stream_id) {
-      wx.miniProgram.navigateTo({ url: '/pagesB/user/loginByPhone/index?back=true&notPass=1' });
-      return;
+    const parentId = getXStreamIdOrParentId(true);
+    if (parentId) {
+      setRecordId(parentId);
     }
-    window.localStorage.setItem('xStreamId', x_stream_id);
-    request.get(APIS.getJsConfig, { xStreamId: x_stream_id }).then((res) => {
-      const wxConfig = JSON.parse(res.data).msg;
-      // console.log(wxConfig)
-      wx.config(myConfig);
-      wx.ready(() => {
-        const isMiniProgram = /miniProgram/i.test(navigator.userAgent.toLowerCase());
-        // console.log(isMiniProgram);
+    if (xStreamId) {
+      request.get(APIS.getJsConfig, { xStreamId }).then((res) => {
+        const wxConfig = JSON.parse(res.data).msg;
+        // console.log(wxConfig)
+        wx.config(wxConfig);
+        wx.error((res) => {
+          // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+          console.log(res);
+        });
+      }).catch((err) => {
+        Toast(err.msg);
       });
-      wx.error((res) => {
-        // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-        console.log(res);
+      request.get(APIS.getUserInfo, { xStreamId }).then((res) => {
+        const data = JSON.parse(res.data);
+        setUserInfo(data.msg || {});
+        setRecordId(data.recordId);
+        setIsCreate(data.isCreate);
+      }).catch((err) => {
+        Toast(err.msg);
       });
-    }).catch((err) => {
-      Toast(err.msg);
+    }
+  }, []);
+
+  useEffect(() => {
+    wx.ready(() => {
+      wx.miniProgram.postMessage({
+        data: {
+          title: '生日照',
+          imageUrl: shareImg,
+          path: `/pages/webview/index?${window.location.origin}/-._/!parentId=${recordId}`
+        }
+      })
     });
-    request.get(APIS.getUserInfo, { xStreamId: x_stream_id }).then((res) => {
-      const data = JSON.parse(res.data);
-      setUserInfo(data.msg || {});
-      setIsCreate(data.isCreate);
-    }).catch((err) => {
-      // Toast(err.msg);
-    })
   }, []);
 
   const closeCreate = () => {
@@ -71,7 +80,7 @@ const Home = () => {
   }
 
   const setRecordIdCb = (recordId) => {
-    setRecord(recordId);
+    setRecordId(recordId);
   }
 
   return (
@@ -80,11 +89,13 @@ const Home = () => {
         <Content
           recordId={recordId}
           userInfo={userInfo}
+          xStreamId={xStreamId}
         /> :
         <Create
           userInfo={userInfo}
           closeCreate={closeCreate}
           setRecordIdCb={setRecordIdCb}
+          xStreamId={xStreamId}
         />}
     </div >
   )

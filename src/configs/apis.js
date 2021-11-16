@@ -5,6 +5,7 @@ const apiMap = {
   create: '/haima/bi/create',
   getDetail: '/haima/bi/detail/whole',
   submitBirthdayWish: '/haima/bi/submitBirthdayWish',
-  getBirthdayWish: '/haima/bi/getBirthdayWish'
+  getBirthdayWish: '/haima/bi/getBirthdayWish',
+  deleteBirthdayWish: '/haima/bi/deleteBirthdayWish'
 }
 export default apiMap

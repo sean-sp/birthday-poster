@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Toast, Field, Icon } from 'react-vant';
 import wx from 'weixin-js-sdk';
-import { request } from '../../../../utils';
+import { request, isWeChat } from '../../../../utils';
 import APIS from '../../../../configs';
 import './index.scss';
 
@@ -52,7 +52,7 @@ let localId = '';
 let val = '';
 
 const Create = (props) => {
-    const { userInfo, closeCreate, setRecordIdCb } = props;
+    const { userInfo, closeCreate, setRecordIdCb, xStreamId } = props;
     const stickerList = [
         {
             key: 1,
@@ -136,6 +136,10 @@ const Create = (props) => {
     }
 
     const create = () => {
+        if (!isWeChat()) {
+            Toast('请在微信环境打开此页面');
+            return;
+        }
         if (!avatar) {
             Toast('请先上传照片');
             return;
@@ -151,7 +155,7 @@ const Create = (props) => {
                     request.post(APIS.create, {
                         avatar, nickname: name, posterUrl, userId: id,
                         modeType: active - 1, remark: msgValue || undefined,
-                        xStreamId: window.localStorage.getItem('xStreamId')
+                        xStreamId
                     }).then((res) => {
                         setRecordIdCb(res.data);
                         Toast({
@@ -164,6 +168,9 @@ const Create = (props) => {
                 }).catch((err) => {
                     Toast(err.msg);
                 })
+            },
+            fail: () => {
+                Toast('请检查接口权限');
             }
         });
     }

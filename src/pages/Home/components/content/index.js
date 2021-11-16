@@ -40,7 +40,7 @@ const dataList = [
 ];
 
 const Content = (props) => {
-    const { recordId, userInfo } = props;
+    const { recordId, userInfo, xStreamId } = props;
     const [detail, setDetail] = useState({});
     const [commentsList, setCommentsList] = useState(dataList);
     const [isOneself, setIsOneself] = useState(false);
@@ -58,9 +58,14 @@ const Content = (props) => {
     }, []);
 
     const deleteComment = (item) => {
-        const index = commentsList.findIndex((comment) => comment.id === item.id);
-        commentsList.splice(index, 1);
-        setCommentsList([...commentsList]);
+        request.post(APIS.deleteBirthdayWish, { recordId: item.recordId }).then((res) => {
+            request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
+                setCommentsList(res.data || []);
+                Toast('删除成功');
+            })
+        }).catch((err) => {
+            Toast(err.msg);
+        })
     }
 
     const sendCommentsCb = (comment) => {
@@ -68,6 +73,7 @@ const Content = (props) => {
         request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishContent: comment, wishType: 'text' }).then(() => {
             request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
                 setCommentsList(res.data || []);
+                Toast('提交成功');
             })
         }).catch((err) => {
             Toast(err.msg);
@@ -85,6 +91,7 @@ const Content = (props) => {
                     request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishVoiceUrl: res.data, wishType: 'voice' }).then(() => {
                         request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
                             setCommentsList(res.data || []);
+                            Toast('提交成功');
                         })
                     }).catch((err) => {
                         Toast(err.msg);
@@ -97,6 +104,10 @@ const Content = (props) => {
     }
 
     const uploadImg = () => {
+        if (!xStreamId) {
+            wx.miniProgram.navigateTo({ url: '/pagesB/user/loginByPhone/index?back=true&notPass=1' });
+            return;
+        }
         wx.chooseImage({
             count: 1, // 默认9
             sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
@@ -113,6 +124,7 @@ const Content = (props) => {
                             request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishPicUrl: res.data, wishType: 'img' }).then((res) => {
                                 request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
                                     setCommentsList(res.data || []);
+                                    Toast('提交成功');
                                 })
                             }).catch((err) => {
                                 Toast(err.msg);
@@ -154,11 +166,17 @@ const Content = (props) => {
                     {/* <div className="footer_desc">版权</div> */}
                 </div>
             </div>
-            <Bubble commentsList={commentsList} isOneself={isOneself} deleteComment={deleteComment} />
+            <Bubble
+                commentsList={commentsList}
+                isOneself={isOneself}
+                deleteComment={deleteComment}
+                xStreamId={xStreamId}
+            />
             <Comments
                 sendCommentsCb={sendCommentsCb}
                 uploadImg={uploadImg}
                 sendVoice={sendVoice}
+                xStreamId={xStreamId}
             />
             {backgroundMusicUrl && <audio
                 src={backgroundMusicUrl}
