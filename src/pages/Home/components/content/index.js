@@ -148,7 +148,7 @@ const Content = (props) => {
                     <img className="top_bg" src={active === 1 ? topLan : active === 2 ? topHui : active === 3 ? topHong : topHei}></img>
                     <img className="top_title" src={titleHui}></img>
                 </div>
-                <img className="share_icon" src={shareIcon}></img>
+                {/* <img className="share_icon" src={shareIcon}></img> */}
                 <div className="main_box">
                     <img className="main_kuang" src={active === 1 ? mainLan : active === 2 ? mainHui : active === 3 ? mainHong : mainHei}></img>
                     {
