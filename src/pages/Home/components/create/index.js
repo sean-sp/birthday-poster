@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Toast, Field, Icon } from 'react-vant';
 import wx from 'weixin-js-sdk';
-import { request } from '../../../../utils';
+import { request, isWeChat } from '../../../../utils';
 import APIS from '../../../../configs';
 import './index.scss';
 
@@ -49,9 +49,10 @@ const footer_hong = {
 };
 
 let localId = '';
+let val = '';
 
 const Create = (props) => {
-    const { userInfo, closeCreate, setRecordIdCb } = props;
+    const { userInfo, closeCreate, setRecordIdCb, xStreamId } = props;
     const stickerList = [
         {
             key: 1,
@@ -72,8 +73,9 @@ const Create = (props) => {
     ]
 
     const [active, setActive] = useState(1);
-    const [avatar, setAvatar] = useState('')
-    const [showMessage, setShowMessage] = useState(false)
+    const [avatar, setAvatar] = useState('');
+    const [msgValue, setMsgValue] = useState('');
+    const [showMessage, setShowMessage] = useState(false);
 
     const changeSticker = (val) => {
         setActive(val.key)
@@ -89,15 +91,25 @@ const Create = (props) => {
     }
 
     //留言
-    const message = () =>{
+    const message = () => {
         setShowMessage(!showMessage)
     }
 
-    const close = () =>{
-        setShowMessage(false)
+    const close = () => {
+        setMsgValue('');
+        setShowMessage(false);
     }
-    const submit = ()=>{
-        setShowMessage(false)
+    const submit = () => {
+        if (!val) {
+            Toast('请输入您的留言');
+            return;
+        }
+        setMsgValue(val);
+        setShowMessage(false);
+    }
+
+    const onMsgChange = (value) => {
+        val = value;
     }
 
     const previewImage = () => {
@@ -124,8 +136,12 @@ const Create = (props) => {
     }
 
     const create = () => {
+        if (!isWeChat()) {
+            Toast('请在微信环境打开此页面');
+            return;
+        }
         if (!avatar) {
-            Toast('请先上传图片');
+            Toast('请先上传照片');
             return;
         }
         wx.uploadImage({
@@ -134,24 +150,27 @@ const Create = (props) => {
             success: (res) => {
                 const serverId = res.serverId; // 返回图片的服务器端ID
                 request.get(APIS.uploadFile, { fileType: 1, mediaId: serverId, token: 'token' }).then((res) => {
-                    const posterUrl = res.msg;
+                    const posterUrl = res.data;
                     const { id, name, avatar } = userInfo;
-                    request.post(APIS.create, { avatar, nickname: name, posterUrl, userId: id, type: active }).then((res) => {
-                        setRecordIdCb(res.recordId)
+                    request.post(APIS.create, {
+                        avatar, nickname: name, posterUrl, userId: id,
+                        modeType: active - 1, remark: msgValue || undefined,
+                        xStreamId
+                    }).then((res) => {
+                        setRecordIdCb(res.data);
                         Toast({
                             message: '创建成功',
                             onClose: closeCreate
                         });
                     }).catch((err) => {
-                        // Toast(err.msg);
-                        Toast({
-                            message: '创建成功',
-                            onClose: closeCreate
-                        })
+                        Toast(err.msg);
                     })
                 }).catch((err) => {
                     Toast(err.msg);
                 })
+            },
+            fail: () => {
+                Toast('请检查接口权限');
             }
         });
     }
@@ -176,8 +195,8 @@ const Create = (props) => {
                             </div>
                     }
                 </div>
-                <div className="message" style={{background: active == 1 ? '#8499B0' : active == 2 ? '#AEB1BC' : active == 3 ? '#D99FA6' : '#A9A7B4'}} onClick={message} >
-                    <Icon name="chat-o" color="#fff" size="1rem"/>
+                <div className="message" style={{ background: active == 1 ? '#8499B0' : active == 2 ? '#AEB1BC' : active == 3 ? '#D99FA6' : '#A9A7B4' }} onClick={message} >
+                    <Icon name="chat-o" color="#fff" size="1rem" />
                 </div>
                 {/* style={active == 1 ? footer_lan : active == 2 ? footer_hui :active == 3 ? footer_hong :footer_hei}> */}
                 {/* <div className="footer_box" >
@@ -192,21 +211,22 @@ const Create = (props) => {
                 </div> */}
             </div>
             {
-                showMessage ? 
-                <div className='message_box'>
-                    <div className="message_title">祝福留言</div>
-                    <img className="message_close" src={closeIcon} onClick={close} ></img>
-                    <Field
-                        className="text"
-                        rows="2"
-                        autosize
-                        type="textarea"
-                        maxlength="50"
-                        placeholder="请输入你的留言"
-                        show-word-limit
-                    />
-                    <div className="message_sure" style={{background: active == 1 ? '#8499B0' : active == 2 ? '#AEB1BC' : active == 3 ? '#D99FA6' : '#A9A7B4'}} onClick={submit}>确定</div>
-                </div>:null
+                showMessage ?
+                    <div className='message_box'>
+                        <div className="message_title">祝福留言</div>
+                        <img className="message_close" src={closeIcon} onClick={close} ></img>
+                        <Field
+                            className="text"
+                            rows="2"
+                            autosize
+                            type="textarea"
+                            maxlength="50"
+                            placeholder="请输入您的留言"
+                            show-word-limit
+                            onChange={onMsgChange}
+                        />
+                        <div className="message_sure" style={{ background: active == 1 ? '#8499B0' : active == 2 ? '#AEB1BC' : active == 3 ? '#D99FA6' : '#A9A7B4' }} onClick={submit}>确定</div>
+                    </div> : null
             }
             <div className='sticker_box'>
                 <div className='sticker_header'>

@@ -50,21 +50,20 @@
     }
     .footer_box{
         width: 100%;
-        height: 1.23rem;
         font-size: 0.2rem;
         font-family: Microsoft YaHei;
         font-weight: 400;
         color: #fff;
         position: absolute;
-        bottom: 0;
+        bottom: 0.1rem;
         left: 0;
+        z-index: 3;
         // background: url(../../../../static/images/footer_hei.png) no-repeat;
         // background-size: 100%;
         .footer_info{
             display: flex;
             align-items: center;
             justify-content: space-around;
-            padding:0.43rem 0;
         }
         img{
             width: 1.7rem;

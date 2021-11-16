@@ -10,7 +10,7 @@ let endTime = 0;
 let moveOff = false;
 
 const Comments = (props) => {
-  const { sendCommentsCb, uploadImg, sendVoice } = props;
+  const { sendCommentsCb, uploadImg, sendVoice, xStreamId } = props;
   const [inputVal, setInputVal] = useState('');
   const [sendVisible, setSendVisible] = useState(false);
   const [voiceBtnVisible, setVoiceBtnVisible] = useState(false);
@@ -37,6 +37,10 @@ const Comments = (props) => {
   }
 
   const onVoiceClick = () => {
+    if (!xStreamId) {
+      wx.miniProgram.navigateTo({ url: '/pagesB/user/loginByPhone/index?back=true&notPass=1' });
+      return;
+    }
     setVoiceBtnVisible(!voiceBtnVisible);
     if (!voiceBtnVisible) {
       initRecordPermission();
@@ -110,7 +114,12 @@ const Comments = (props) => {
   }
 
   const sendComments = () => {
+    if (!xStreamId) {
+      wx.miniProgram.navigateTo({ url: '/pagesB/user/loginByPhone/index?back=true&notPass=1' });
+      return;
+    }
     if (inputVal) {
+      setInputVal('');
       sendCommentsCb(inputVal);
     }
   }
@@ -125,7 +134,7 @@ const Comments = (props) => {
         {voiceBtnClickOff ? '松开结束' : '按住说话'}
       </div> :
         <div className="text-input">
-          <input placeholder="请留下您的祝福..." onInput={onCommentsInput} />
+          <input placeholder="请留下您的祝福..." onInput={onCommentsInput} value={inputVal} />
         </div>}
       <div className="voice-svg" onClick={onVoiceClick}>
         {voiceBtnVisible ? <KeyboardSvgComponent /> : <VoiceSvgComponent />}

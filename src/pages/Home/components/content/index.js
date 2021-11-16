@@ -26,72 +26,89 @@ import mainHui from '../../../../static/images/main_hui.png'
 import mainHei from '../../../../static/images/main_hei.png'
 import mainHong from '../../../../static/images/main_hong.png'
 import mainLan from '../../../../static/images/main_lan.png'
+import avatar from '../../../../static/images/bg1.png'
 
 const dataList = [
     {
-        name: '爱德华兹',
-        content: '生日快乐',
-        type: 'text'
-    },
-    {
-        name: 'flying',
-        content: topLan,
-        type: 'img'
-    },
-    {
-        name: '大的文',
-        content: bell,
-        type: 'voice',
-        id:223
-    },
-    {
-        name: '小的文',
-        content: birthday,
-        type: 'voice',
-        id:224
+        avatar,
+        nickname: '爱德华兹',
+        wishContent: '生日快乐',
+        wishType: 'text',
+        recordId: 2233,
+        wishPicUrl: '',
+        wishVoiceUrl: ''
     }
 ];
 
 const Content = (props) => {
-    const { recordId } = props;
+    const { recordId, userInfo, xStreamId } = props;
     const [detail, setDetail] = useState({});
     const [commentsList, setCommentsList] = useState(dataList);
-    const [active] = useState(1);
+    const [isOneself, setIsOneself] = useState(false);
 
     useEffect(() => {
         request.get(APIS.getDetail, { recordId }).then((res) => {
             const data = res.data || {};
-            const { birthdayInfoDTO, birthdayWishDTOList } = data;
+            const { birthdayInfoDTO, birthdayWishDTOList, isOneself } = data;
             setDetail(birthdayInfoDTO || {});
-            // setCommentsList(birthdayWishDTOList || []);
+            setIsOneself(isOneself);
+            setCommentsList(birthdayWishDTOList || []);
         }).catch((err) => {
             Toast(err.msg);
         })
-    }, [])
+    }, []);
+
+    const deleteComment = (item) => {
+        request.post(APIS.deleteBirthdayWish, { recordId: item.recordId }).then((res) => {
+            request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
+                setCommentsList(res.data || []);
+                Toast('删除成功');
+            })
+        }).catch((err) => {
+            Toast(err.msg);
+        })
+    }
 
     const sendCommentsCb = (comment) => {
-        setCommentsList([
-            ...commentsList,
-            {
-                name: `海马体${parseInt(Math.random() * 10)}`,
-                content: comment,
-                type: 'text'
-            }
-        ])
+        const { id, name, avatar } = userInfo;
+        request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishContent: comment, wishType: 'text' }).then(() => {
+            request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
+                setCommentsList(res.data || []);
+                Toast('提交成功');
+            })
+        }).catch((err) => {
+            Toast(err.msg);
+        })
     }
 
     const sendVoice = (voiceLocalId) => {
-        setCommentsList([
-            ...commentsList,
-            {
-                name: `海马体${parseInt(Math.random() * 10)}`,
-                content: voiceLocalId,
-                type: 'voice'
+        wx.uploadVoice({
+            localId: voiceLocalId, // 需要上传的音频的本地ID，由stopRecord接口获得
+            isShowProgressTips: 1, // 默认为1，显示进度提示
+            success: (res) => {
+                const serverId = res.serverId; // 返回音频的服务器端ID
+                request.get(APIS.uploadFile, { fileType: 2, mediaId: serverId, token: 'token' }).then((res) => {
+                    const { id, name, avatar } = userInfo;
+                    request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishVoiceUrl: res.data, wishType: 'voice' }).then(() => {
+                        request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
+                            setCommentsList(res.data || []);
+                            Toast('提交成功');
+                        })
+                    }).catch((err) => {
+                        Toast(err.msg);
+                    })
+                }).catch((err) => {
+                    Toast(err.msg);
+                })
             }
-        ])
+        });
     }
 
     const uploadImg = () => {
+        if (!xStreamId) {
+            wx.miniProgram.navigateTo({ url: '/pagesB/user/loginByPhone/index?back=true&notPass=1' });
+            return;
+        }
         wx.chooseImage({
             count: 1, // 默认9
             sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
@@ -104,7 +121,15 @@ const Content = (props) => {
                     success: (res) => {
                         const serverId = res.serverId; // 返回图片的服务器端ID
                         request.get(APIS.uploadFile, { fileType: 1, mediaId: serverId, token: 'token' }).then((res) => {
-                            console.log(res);
+                            const { id, name, avatar } = userInfo;
+                            request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishPicUrl: res.data, wishType: 'img' }).then((res) => {
+                                request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
+                                    setCommentsList(res.data || []);
+                                    Toast('提交成功');
+                                })
+                            }).catch((err) => {
+                                Toast(err.msg);
+                            })
                         }).catch((err) => {
                             Toast(err.msg);
                         })
@@ -114,7 +139,8 @@ const Content = (props) => {
         });
     }
 
-    const { posterUrl, backgroundMusicUrl } = detail;
+    const { posterUrl, backgroundMusicUrl, modeType } = detail;
+    const active = modeType + 1;
 
     return (
         <Poster />

@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import { Dialog } from 'react-vant';
 import ReactSeamlessScroll from 'react-seamless-scroll';
 import { VoiceSvgComponent } from '../svg'
 import wx from 'weixin-js-sdk';
 import './index.scss';
-import avatar from '../../../../static/images/bg1.png'
 import voiceIcon from '../../../../static/images/voice.gif'
 
 let voiceId = '';
 
 const Bubble = (props) => {
-    const { commentsList } = props;
+    const { commentsList, isOneself, deleteComment, xStreamId } = props;
     const audio = useMemo(() => new Audio(), []);
     const [activeVoice, setActiveVoice] = useState(-1)
 
@@ -21,23 +21,33 @@ const Bubble = (props) => {
     }, [audio]);
 
     const onCommentTap = (item) => {
-        if (item.type === 'voice') {
-            audio.src = item.content;
+        if (item.wishType === 'voice') {
+            audio.src = item.wishVoiceUrl;
             audio.play();
-            voiceId = item.name;
-            setActiveVoice(item.id)
+            voiceId = item.recordId;
+            setActiveVoice(item.recordId)
             return;
         }
-        if (item.type === 'img') {
+        if (item.wishType === 'img') {
+            if (!xStreamId) {
+                wx.miniProgram.navigateTo({ url: '/pagesB/user/loginByPhone/index?back=true&notPass=1' });
+                return;
+            }
             wx.previewImage({
-                current: item.content, // 当前显示图片的http链接
-                urls: [item.content] // 需要预览的图片http链接列表
+                current: item.wishPicUrl, // 当前显示图片的http链接
+                urls: [item.wishPicUrl] // 需要预览的图片http链接列表
             });
         }
     }
 
-    const deleteTap = () =>{
-        
+    const deleteTap = (e, item) => {
+        e.stopPropagation();
+        Dialog.confirm({
+            title: '删除',
+            message: '确认要删除该条评论？',
+        }).then(() => {
+            deleteComment(item);
+        })
     }
 
     return (
@@ -45,14 +55,14 @@ const Bubble = (props) => {
             <ReactSeamlessScroll speed={30} style={{ width: '5rem', height: '3rem' }}>
                 <div className="bubble_item">
                     {
-                        commentsList.map((item, index) => (
-                            <div key={index} onClick={() => onCommentTap(item)}>
-                                <img className='avatar' src={avatar} alt="avatar"></img>
-                                <span className="nickname">{item.name}:</span>
+                        commentsList.map((item) => (
+                            <div key={item.recordId} onClick={() => onCommentTap(item)}>
+                                <img className='avatar' src={item.avatar} alt="avatar"></img>
+                                <span className="nickname">{item.nickname}:</span>
                                 {
-                                    item.type === 'text' ? <span>{item.content}</span> : item.type === 'img' ? <img className="bubble_img" src={item.content} alt="avatar"></img> : <span className='voice_icon'>{activeVoice === item.id ? <img src={voiceIcon} alt="avatar"></img> : <VoiceSvgComponent />}</span>
+                                    item.wishType === 'text' ? <span>{item.wishContent}</span> : item.wishType === 'img' ? <img className="bubble_img" src={item.wishPicUrl}></img> : <span className='voice_icon'>{activeVoice === item.recordId ? <img src={voiceIcon}></img> : <VoiceSvgComponent />}</span>
                                 }
-                                <span className='delete' onClick={() => deleteTap(item)} >x</span>
+                                {!isOneself && <span className='delete' onClick={(e) => deleteTap(e, item)} >x</span>}
                             </div>
                         ))
                     }

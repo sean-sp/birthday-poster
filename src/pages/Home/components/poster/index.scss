@@ -95,6 +95,14 @@
         }
     }
 }
+.poster_dialog{
+    text-align: center;
+}
+.poster_img{
+    width: 3rem;
+    height: 4.5rem;
+    margin: 0.2rem 0;
+}
 
 @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3){
     .poster_box .top_box{

@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useState, useEffect, useRef } from 'react';
-import { Toast } from 'react-vant';
+import { Toast, Dialog } from 'react-vant';
 import wx from 'weixin-js-sdk';
 import QRCode from "qrcode";
 import html2canvas from "html2canvas"
@@ -31,6 +31,7 @@ const Poster = (props) => {
     const [qr,setQr] = useState('')
     const [posterImg, setposterImg] = useState('')
     const article = useRef()
+    const [show, setShow] = useState(false);
 
     useEffect(() => {
         QRCode.toCanvas(document.getElementById("img"), 'https://www.baidu.com/', {
@@ -58,9 +59,24 @@ const Poster = (props) => {
             logging: false,
         }).then((canvas) => {
             setposterImg(canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"))
+            savePicture(posterImg)
+            setShow(true)
         });
 
     }, [])
+
+    const savePicture = (Url) => {
+        var blob=new Blob([''], {type:'application/octet-stream'});
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = Url;
+        a.download = Url.replace(/(.*\/)*([^.]+.*)/ig,"$2").split("?")[0];
+        var e = document.createEvent('MouseEvents');
+        e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        a.dispatchEvent(e);
+        URL.revokeObjectURL(url);
+    }
+
 
     return (
         <div style={{height:'100%'}}>
@@ -90,6 +106,16 @@ const Poster = (props) => {
                 </div>
             </div>
             {/* <img src={posterImg}></img> */}
+            <Dialog
+                visible={show}
+                title="海报预览"
+                showCancelButton
+                className="poster_dialog"
+                onCancel={() => setShow(false)}
+                onConfirm={() => alert('confirm button click')}
+                >
+                <img className="poster_img" src={posterImg} alt="海报" />
+            </Dialog>
         </div>
     )
 }
