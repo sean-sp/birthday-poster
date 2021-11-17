@@ -28,7 +28,7 @@ import mainLan from '../../../../static/images/main_lan.png'
 const Poster = (props) => {
     const { recordId, posterUrl } = props;
     const [active] = useState(1);
-    const [qr,setQr] = useState('')
+    const [qr, setQr] = useState('')
     const [posterImg, setposterImg] = useState('')
     const article = useRef()
     const [show, setShow] = useState(false);
@@ -49,7 +49,7 @@ const Poster = (props) => {
         canvas.height = height * scale;
         //  设置图片为2d
         canvas.getContext("2d").scale(scale, scale);
-        
+
         // 调用html2canvas 生成海报的方法  这样写是为了兼容部分手机不能显示
         //  this.$refs.article  就是定义的海报dom元素
         // useCORS: true   设置图片可以跨域
@@ -59,14 +59,14 @@ const Poster = (props) => {
             logging: false,
         }).then((canvas) => {
             setposterImg(canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"))
-            savePicture(posterImg)
+            // savePicture(posterImg)
             setShow(true)
         });
 
     }, [])
 
     const savePicture = (Url) => {
-        var blob=new Blob([''], {type:'application/octet-stream'});
+        var blob = new Blob([''], { type: 'application/octet-stream' });
         var url = URL.createObjectURL(blob);
         var a = document.createElement('a');
         a.href = Url;
@@ -79,7 +79,7 @@ const Poster = (props) => {
 
 
     return (
-        <div style={{height:'100%'}}>
+        <div style={{ height: '100%' }}>
             <div className="poster_box" id="posterDom" ref={article} style={{ background: active === 1 ? 'linear-gradient(55deg, #9DB6CF, #607798)' : active === 2 ? 'linear-gradient(-55deg, #A2A2AB, #92929B)' : active === 3 ? 'linear-gradient(-55deg, #F0BCC0, #934A55)' : 'linear-gradient(-55deg, #9B9BA7, #8A8793);' }}>
                 <div className="top_box">
                     <img className="top_bg" src={active === 1 ? topLan : active === 2 ? topHui : active === 3 ? topHong : topHei}></img>
@@ -113,7 +113,7 @@ const Poster = (props) => {
                 className="poster_dialog"
                 onCancel={() => setShow(false)}
                 onConfirm={() => alert('confirm button click')}
-                >
+            >
                 <img className="poster_img" src={posterImg} alt="海报" />
             </Dialog>
         </div>

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Toast, Field, Icon } from 'react-vant';
 import wx from 'weixin-js-sdk';
-import { request, isWeChat } from '../../../../utils';
+import { request, isLogin } from '../../../../utils';
 import APIS from '../../../../configs';
 import './index.scss';
 
@@ -32,7 +32,6 @@ import footerHui from '../../../../static/images/footer_hui.png'
 import footerLan from '../../../../static/images/footer_lan.png'
 import footerHong from '../../../../static/images/footer_hong.png'
 
-import messageIcon from '../../../../static/images/message_icon.png'
 import closeIcon from '../../../../static/images/close_icon.png'
 
 const footer_hei = {
@@ -113,6 +112,7 @@ const Create = (props) => {
     }
 
     const previewImage = () => {
+        if (!isLogin()) return;
         wx.chooseImage({
             count: 1, // 默认9
             sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
@@ -136,10 +136,6 @@ const Create = (props) => {
     }
 
     const create = () => {
-        if (!isWeChat()) {
-            Toast('请在微信环境打开此页面');
-            return;
-        }
         if (!avatar) {
             Toast('请先上传照片');
             return;
@@ -149,7 +145,7 @@ const Create = (props) => {
             isShowProgressTips: 1, // 默认为1，显示进度提示
             success: (res) => {
                 const serverId = res.serverId; // 返回图片的服务器端ID
-                request.get(APIS.uploadFile, { fileType: 1, mediaId: serverId, token: 'token' }).then((res) => {
+                request.post(APIS.uploadFile, { fileType: 1, mediaId: serverId, xstreamId: xStreamId }).then((res) => {
                     const posterUrl = res.data;
                     const { id, name, avatar } = userInfo;
                     request.post(APIS.create, {

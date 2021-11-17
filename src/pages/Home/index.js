@@ -25,7 +25,8 @@ const myConfig = {
     'startRecord',
     'stopRecord',
     'onVoiceRecordEnd',
-    'uploadVoice'
+    'uploadVoice',
+    'downloadImage'
   ] // 必填，需要使用的JS接口列表
 };
 
@@ -50,7 +51,7 @@ const Home = () => {
           console.log(res);
         });
       }).catch((err) => {
-        Toast(err.msg);
+        Toast(err.msg || '网络开小差了');
       });
       request.get(APIS.getUserInfo, { xStreamId }).then((res) => {
         const data = JSON.parse(res.data);
@@ -58,7 +59,7 @@ const Home = () => {
         setRecordId(data.recordId);
         setIsCreate(data.isCreate);
       }).catch((err) => {
-        Toast(err.msg);
+        Toast(err.msg || '网络开小差了');
       });
     }
   }, []);

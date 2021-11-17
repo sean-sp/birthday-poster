@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Toast } from 'react-vant';
 import wx from 'weixin-js-sdk';
+import { isLogin } from '../../../../utils';
 import { VoiceSvgComponent, ImgSvgComponent, SendSvgComponent, KeyboardSvgComponent } from '../svg'
 import './index.scss';
 
@@ -10,7 +11,7 @@ let endTime = 0;
 let moveOff = false;
 
 const Comments = (props) => {
-  const { sendCommentsCb, uploadImg, sendVoice, xStreamId } = props;
+  const { sendCommentsCb, uploadImg, sendVoice } = props;
   const [inputVal, setInputVal] = useState('');
   const [sendVisible, setSendVisible] = useState(false);
   const [voiceBtnVisible, setVoiceBtnVisible] = useState(false);
@@ -37,10 +38,7 @@ const Comments = (props) => {
   }
 
   const onVoiceClick = () => {
-    if (!xStreamId) {
-      wx.miniProgram.navigateTo({ url: '/pagesB/user/loginByPhone/index?back=true&notPass=1' });
-      return;
-    }
+    if (!isLogin()) return;
     setVoiceBtnVisible(!voiceBtnVisible);
     if (!voiceBtnVisible) {
       initRecordPermission();
@@ -114,10 +112,7 @@ const Comments = (props) => {
   }
 
   const sendComments = () => {
-    if (!xStreamId) {
-      wx.miniProgram.navigateTo({ url: '/pagesB/user/loginByPhone/index?back=true&notPass=1' });
-      return;
-    }
+    if (!isLogin()) return;
     if (inputVal) {
       setInputVal('');
       sendCommentsCb(inputVal);
