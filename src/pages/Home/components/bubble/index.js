@@ -60,7 +60,7 @@ const Bubble = (props) => {
                                 <img className='avatar' src={item.avatar} alt="avatar"></img>
                                 <span className="nickname">{item.nickname}:</span>
                                 {
-                                    item.wishType === 'text' ? <span>{item.wishContent}</span> : item.wishType === 'img' ? <img className="bubble_img" src={item.wishPicUrl}></img> : <span className='voice_icon'>{activeVoice === item.recordId ? <img src={voiceIcon}></img> : <VoiceSvgComponent />}</span>
+                                    item.wishType === 'text' ? <span>{item.wishContent}</span> : item.wishType === 'img' ? <img className="bubble_img" src={item.wishPicUrl} alt="avatar"></img> : <span className='voice_icon'>{activeVoice === item.recordId ? <img src={voiceIcon} alt="avatar"></img> : <VoiceSvgComponent />}</span>
                                 }
                                 {!isOneself && <span className='delete' onClick={(e) => deleteTap(e, item)} >x</span>}
                             </div>
