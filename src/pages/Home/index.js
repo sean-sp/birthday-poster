@@ -25,8 +25,7 @@ const myConfig = {
     'startRecord',
     'stopRecord',
     'onVoiceRecordEnd',
-    'uploadVoice',
-    'downloadImage'
+    'uploadVoice'
   ] // 必填，需要使用的JS接口列表
 };
 
