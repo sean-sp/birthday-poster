@@ -1,7 +1,9 @@
 /* eslint-disable */
-import React, { useState, useEffect } from 'react';
-import { Toast } from 'react-vant';
+import React, { useState, useEffect, useRef } from 'react';
+import { Toast, Dialog } from 'react-vant';
 import wx from 'weixin-js-sdk';
+import QRCode from "qrcode";
+import html2canvas from "html2canvas";
 import { request, isLogin } from '../../../../utils';
 import APIS from '../../../../configs';
 import Comments from '../comments';
@@ -38,11 +40,13 @@ const dataList = [
 ];
 
 const Content = (props) => {
+    const posterRef = useRef();
     const { recordId, userInfo, xStreamId } = props;
     const [detail, setDetail] = useState({});
     const [commentsList, setCommentsList] = useState(dataList);
     const [isOneself, setIsOneself] = useState(false);
-    const [showPoster, setShowPoster] = useState(false)
+    const [posterShow, setPosterShow] = useState(false);
+    const [posterImg, setPosterImg] = useState('');
 
     useEffect(() => {
         request.get(APIS.getDetail, { recordId }).then((res) => {
@@ -134,12 +138,37 @@ const Content = (props) => {
         });
     }
 
-    const posterClick = () =>{
-        setShowPoster(true)
+    const onShare = () => {
+        QRCode.toCanvas(document.getElementById("img"), 'https://www.baidu.com/', {
+            margin: 1,
+        });
+        // 获取自定义的dom  元素
+        const posterDom = posterRef.current;
+        const width = posterDom.offsetWidth;
+        const height = posterDom.offsetHeight;
+        // 定义canvas对象
+        const canvas = document.createElement("canvas");
+        const scale = 1; // 放大图片6倍
+        canvas.width = width * scale;
+        canvas.height = height * scale;
+        //  设置图片为2d
+        canvas.getContext("2d").scale(scale, scale);
+
+        // 调用html2canvas 生成海报的方法  这样写是为了兼容部分手机不能显示
+        //  this.$refs.article  就是定义的海报dom元素
+        // useCORS: true   设置图片可以跨域
+        // canvas.toDataURL()方法会生成一个  图片url 可以直接拿来用
+        (window.html2canvas || html2canvas)(posterDom, {
+            useCORS: true,
+            logging: false,
+        }).then((canvas) => {
+            setPosterImg(canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
+            setPosterShow(true);
+        });
     }
 
-    const setPropsShow = (item) =>{
-        setShowPoster(item)
+    const closePoster = () => {
+        setPosterShow(false);
     }
 
     const { posterUrl, backgroundMusicUrl, modeType } = detail;
@@ -152,7 +181,7 @@ const Content = (props) => {
                     <img className="top_bg" src={active === 1 ? topLan : active === 2 ? topHui : active === 3 ? topHong : topHei}></img>
                     <img className="top_title" src={titleHui}></img>
                 </div>
-                <img className="share_icon" src={shareIcon} onClick={posterClick}></img>
+                <img className="share_icon" src={shareIcon} onClick={onShare}></img>
                 <div className="main_box">
                     <img className="main_kuang" src={active === 1 ? mainLan : active === 2 ? mainHui : active === 3 ? mainHong : mainHei}></img>
                     {
@@ -188,9 +217,22 @@ const Content = (props) => {
             >
                 Your browser does not support the <code>audio</code> element.
             </audio>}
-            {
-                showPoster ?  <Poster posterUrl={posterUrl} active={active} setPropsShow={setPropsShow} /> : null
-            }
+            <Poster
+                posterUrl={posterUrl}
+                active={active}
+                ref={posterRef}
+            />
+            <Dialog
+                visible={posterShow}
+                title="分享海报"
+                closeable={true}
+                showConfirmButton={false}
+                className="poster_dialog"
+                onClose={closePoster}
+            >
+                <img className="poster_img" src={posterImg} alt="海报" />
+                <p className="poster_desc">长按上方图片分享给好友</p>
+            </Dialog>
         </div>
     )
 }
