@@ -27,9 +27,9 @@ export const isLogin = () => {
         wx.miniProgram.navigateTo({ url: '/pagesB/user/loginByPhone/index?back=true&notPass=1' });
         return false;
       }
-      Toast('请先登录');
-      return false;
-    })
+    });
+    Toast('请先登录');
+    return false;
   }
   return true;
 }
