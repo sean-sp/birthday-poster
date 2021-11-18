@@ -138,6 +138,10 @@ const Content = (props) => {
         setShowPoster(true)
     }
 
+    const setPropsShow = (item) =>{
+        setShowPoster(item)
+    }
+
     const { posterUrl, backgroundMusicUrl, modeType } = detail;
     const active = modeType + 1;
 
@@ -185,7 +189,7 @@ const Content = (props) => {
                 Your browser does not support the <code>audio</code> element.
             </audio>}
             {
-                showPoster ?  <Poster posterUrl={posterUrl} active={active} /> : null
+                showPoster ?  <Poster posterUrl={posterUrl} active={active} setPropsShow={setPropsShow} /> : null
             }
         </div>
     )
