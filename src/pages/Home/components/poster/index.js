@@ -26,13 +26,12 @@ import mainLan from '../../../../static/images/main_lan.png'
 
 
 const Poster = (props) => {
-    const { recordId, posterUrl } = props;
-    const [active] = useState(1);
+    const { posterUrl, active } = props;
+    // const [active] = useState(1);
     const [qr, setQr] = useState('')
     const [posterImg, setposterImg] = useState('')
     const article = useRef()
     const [show, setShow] = useState(false);
-
     useEffect(() => {
         QRCode.toCanvas(document.getElementById("img"), 'https://www.baidu.com/', {
             margin: 1,
