@@ -26,7 +26,7 @@ import mainLan from '../../../../static/images/main_lan.png'
 
 
 const Poster = (props) => {
-    const { posterUrl, active } = props;
+    const { posterUrl, active, setPropsShow } = props;
     // const [active] = useState(1);
     const [qr, setQr] = useState('')
     const [posterImg, setposterImg] = useState('')
@@ -36,7 +36,7 @@ const Poster = (props) => {
         QRCode.toCanvas(document.getElementById("img"), 'https://www.baidu.com/', {
             margin: 1,
         })
-
+        Toast('海报生成中')
         // 获取自定义海拔的dom  元素
         var copyDom = document.getElementById("posterDom");
         var width = copyDom.offsetWidth;
@@ -62,7 +62,7 @@ const Poster = (props) => {
             setShow(true)
         });
 
-    }, [])
+    })
 
     const savePicture = (Url) => {
         var blob = new Blob([''], { type: 'application/octet-stream' });
@@ -76,10 +76,15 @@ const Poster = (props) => {
         URL.revokeObjectURL(url);
     }
 
+    const cancel = ()=>{
+        setShow(false)
+        setPropsShow(false)
+    }
+
 
     return (
         <div style={{ height: '100%' }}>
-            <div className="poster_box" id="posterDom" ref={article} style={{ background: active === 1 ? 'linear-gradient(55deg, #9DB6CF, #607798)' : active === 2 ? 'linear-gradient(-55deg, #A2A2AB, #92929B)' : active === 3 ? 'linear-gradient(-55deg, #F0BCC0, #934A55)' : 'linear-gradient(-55deg, #9B9BA7, #8A8793);' }}>
+            <div className="poster_box" id="posterDom" ref={article} style={{ background: active === 1 ? 'linear-gradient(55deg, #9DB6CF, #607798)' : active === 2 ? 'linear-gradient(-55deg, #A2A2AB, #92929B)' : active === 3 ? 'linear-gradient(-55deg, #F0BCC0, #934A55)' : 'linear-gradient(-55deg, #9B9BA7, #8A8793)' }}>
                 <div className="top_box">
                     <img className="top_bg" src={active === 1 ? topLan : active === 2 ? topHui : active === 3 ? topHong : topHei}></img>
                     <img className="top_title" src={titleHui}></img>
@@ -112,7 +117,7 @@ const Poster = (props) => {
                 closeable={true}
                 showConfirmButton={false}
                 className="poster_dialog"
-                onClose={() => setShow(false)}
+                onClose={cancel}
                 >
                 <img className="poster_img" src={posterImg} alt="海报" />
                 <p className="poster_desc">长按上方图片分享给好友</p>
