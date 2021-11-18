@@ -42,6 +42,7 @@ const Content = (props) => {
     const [detail, setDetail] = useState({});
     const [commentsList, setCommentsList] = useState(dataList);
     const [isOneself, setIsOneself] = useState(false);
+    const [showPoster, setShowPoster] = useState(false)
 
     useEffect(() => {
         request.get(APIS.getDetail, { recordId }).then((res) => {
@@ -133,18 +134,21 @@ const Content = (props) => {
         });
     }
 
+    const posterClick = () =>{
+        setShowPoster(true)
+    }
+
     const { posterUrl, backgroundMusicUrl, modeType } = detail;
     const active = modeType + 1;
 
     return (
-        // <Poster />
         <div className="content_box" style={{ background: active === 1 ? 'linear-gradient(55deg, #9DB6CF, #607798)' : active === 2 ? 'linear-gradient(-55deg, #A2A2AB, #92929B)' : active === 3 ? 'linear-gradient(-55deg, #F0BCC0, #934A55)' : 'linear-gradient(-55deg, #9B9BA7, #8A8793)' }}>
             <div>
                 <div className="top_box">
                     <img className="top_bg" src={active === 1 ? topLan : active === 2 ? topHui : active === 3 ? topHong : topHei}></img>
                     <img className="top_title" src={titleHui}></img>
                 </div>
-                {/* <img className="share_icon" src={shareIcon}></img> */}
+                <img className="share_icon" src={shareIcon} onClick={posterClick}></img>
                 <div className="main_box">
                     <img className="main_kuang" src={active === 1 ? mainLan : active === 2 ? mainHui : active === 3 ? mainHong : mainHei}></img>
                     {
@@ -180,6 +184,9 @@ const Content = (props) => {
             >
                 Your browser does not support the <code>audio</code> element.
             </audio>}
+            {
+                showPoster ?  <Poster posterUrl={posterUrl} active={active} /> : null
+            }
         </div>
     )
 }
