@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Dialog } from 'react-vant';
 import ReactSeamlessScroll from 'react-seamless-scroll';
+import { isLogin } from '../../../../utils';
 import { VoiceSvgComponent } from '../svg'
 import wx from 'weixin-js-sdk';
 import './index.scss';
@@ -9,7 +10,7 @@ import voiceIcon from '../../../../static/images/voice.gif'
 let voiceId = '';
 
 const Bubble = (props) => {
-    const { commentsList, isOneself, deleteComment, xStreamId } = props;
+    const { commentsList, isOneself, deleteComment } = props;
     const audio = useMemo(() => new Audio(), []);
     const [activeVoice, setActiveVoice] = useState(-1)
 
@@ -29,10 +30,7 @@ const Bubble = (props) => {
             return;
         }
         if (item.wishType === 'img') {
-            if (!xStreamId) {
-                wx.miniProgram.navigateTo({ url: '/pagesB/user/loginByPhone/index?back=true&notPass=1' });
-                return;
-            }
+            if (!isLogin()) return;
             wx.previewImage({
                 current: item.wishPicUrl, // 当前显示图片的http链接
                 urls: [item.wishPicUrl] // 需要预览的图片http链接列表

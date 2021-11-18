@@ -2,13 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import { Toast } from 'react-vant';
 import wx from 'weixin-js-sdk';
-import { request } from '../../../../utils';
+import { request, isLogin } from '../../../../utils';
 import APIS from '../../../../configs';
 import Comments from '../comments';
 import Bubble from '../bubble';
 import Poster from '../poster';
-import bell from '../../../../static/audio/bell.mp3';
-import birthday from '../../../../static/audio/birthday.mp3';
 import './index.scss';
 
 import titleHui from '../../../../static/images/title_hui.png'
@@ -26,18 +24,17 @@ import mainHui from '../../../../static/images/main_hui.png'
 import mainHei from '../../../../static/images/main_hei.png'
 import mainHong from '../../../../static/images/main_hong.png'
 import mainLan from '../../../../static/images/main_lan.png'
-import avatar from '../../../../static/images/bg1.png'
 
 const dataList = [
-    {
-        avatar,
-        nickname: '爱德华兹',
-        wishContent: '生日快乐',
-        wishType: 'text',
-        recordId: 2233,
-        wishPicUrl: '',
-        wishVoiceUrl: ''
-    }
+    // {
+    //     avatar,
+    //     nickname: '爱德华兹',
+    //     wishContent: '生日快乐',
+    //     wishType: 'text',
+    //     recordId: 2233,
+    //     wishPicUrl: '',
+    //     wishVoiceUrl: ''
+    // }
 ];
 
 const Content = (props) => {
@@ -54,12 +51,12 @@ const Content = (props) => {
             setIsOneself(isOneself);
             setCommentsList(birthdayWishDTOList || []);
         }).catch((err) => {
-            Toast(err.msg);
+            Toast(err.msg || '网络开小差了');
         })
     }, []);
 
     const deleteComment = (item) => {
-        request.post(APIS.deleteBirthdayWish, { recordId: item.recordId }).then((res) => {
+        request.post(APIS.deleteBirthdayWish, { recordId: item.recordId }).then(() => {
             request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
                 setCommentsList(res.data || []);
                 Toast('删除成功');
@@ -87,7 +84,7 @@ const Content = (props) => {
             isShowProgressTips: 1, // 默认为1，显示进度提示
             success: (res) => {
                 const serverId = res.serverId; // 返回音频的服务器端ID
-                request.get(APIS.uploadFile, { fileType: 2, mediaId: serverId, token: 'token' }).then((res) => {
+                request.get(APIS.uploadFile, { fileType: 2, mediaId: serverId, xstreamId: xStreamId }).then((res) => {
                     const { id, name, avatar } = userInfo;
                     request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishVoiceUrl: res.data, wishType: 'voice' }).then(() => {
                         request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
@@ -105,10 +102,7 @@ const Content = (props) => {
     }
 
     const uploadImg = () => {
-        if (!xStreamId) {
-            wx.miniProgram.navigateTo({ url: '/pagesB/user/loginByPhone/index?back=true&notPass=1' });
-            return;
-        }
+        if (!isLogin()) return;
         wx.chooseImage({
             count: 1, // 默认9
             sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
@@ -120,7 +114,7 @@ const Content = (props) => {
                     isShowProgressTips: 1, // 默认为1，显示进度提示
                     success: (res) => {
                         const serverId = res.serverId; // 返回图片的服务器端ID
-                        request.get(APIS.uploadFile, { fileType: 1, mediaId: serverId, token: 'token' }).then((res) => {
+                        request.get(APIS.uploadFile, { fileType: 1, mediaId: serverId, xstreamId: xStreamId }).then((res) => {
                             const { id, name, avatar } = userInfo;
                             request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishPicUrl: res.data, wishType: 'img' }).then((res) => {
                                 request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
@@ -143,45 +137,50 @@ const Content = (props) => {
     const active = modeType + 1;
 
     return (
-        <Poster />
-        // <div className="content_box" style={{ background: active === 1 ? 'linear-gradient(55deg, #9DB6CF, #607798)' : active === 2 ? 'linear-gradient(-55deg, #A2A2AB, #92929B)' : active === 3 ? 'linear-gradient(-55deg, #F0BCC0, #934A55)' : 'linear-gradient(-55deg, #9B9BA7, #8A8793);' }}>
-        //     <div>
-        //         <div className="top_box">
-        //             <img className="top_bg" src={active === 1 ? topLan : active === 2 ? topHui : active === 3 ? topHong : topHei}></img>
-        //             <img className="top_title" src={titleHui}></img>
-        //         </div>
-        //         <img className="share_icon" src={shareIcon}></img>
-        //         <div className="main_box">
-        //             <img className="main_kuang" src={active === 1 ? mainLan : active === 2 ? mainHui : active === 3 ? mainHong : mainHei}></img>
-        //             {
-        //                 posterUrl && <img className="avatar_view" src={posterUrl}></img>
-        //             }
-        //         </div>
-        //         <div className="footer_box" >
-        //             <div className="footer_info">
-        //                 <span><img src={logo}></img></span>
-        //                 <span>|</span>
-        //                 <span>生活需要仪式感</span>
-        //                 <span>|</span>
-        //                 <span>2021</span>
-        //             </div>
-        //             {/* <div className="footer_desc">版权</div> */}
-        //         </div>
-        //     </div>
-        //     <Bubble commentsList={commentsList} />
-        //     <Comments
-        //         sendCommentsCb={sendCommentsCb}
-        //         uploadImg={uploadImg}
-        //         sendVoice={sendVoice}
-        //     />
-        //     {backgroundMusicUrl && <audio
-        //         src={backgroundMusicUrl}
-        //         autoPlay
-        //         loop
-        //     >
-        //         Your browser does not support the <code>audio</code> element.
-        //     </audio>}
-        // </div>
+        // <Poster />
+        <div className="content_box" style={{ background: active === 1 ? 'linear-gradient(55deg, #9DB6CF, #607798)' : active === 2 ? 'linear-gradient(-55deg, #A2A2AB, #92929B)' : active === 3 ? 'linear-gradient(-55deg, #F0BCC0, #934A55)' : 'linear-gradient(-55deg, #9B9BA7, #8A8793)' }}>
+            <div>
+                <div className="top_box">
+                    <img className="top_bg" src={active === 1 ? topLan : active === 2 ? topHui : active === 3 ? topHong : topHei}></img>
+                    <img className="top_title" src={titleHui}></img>
+                </div>
+                {/* <img className="share_icon" src={shareIcon}></img> */}
+                <div className="main_box">
+                    <img className="main_kuang" src={active === 1 ? mainLan : active === 2 ? mainHui : active === 3 ? mainHong : mainHei}></img>
+                    {
+                        posterUrl && <img className="avatar_view" src={posterUrl}></img>
+                    }
+                </div>
+                <div className="footer_box" >
+                    <div className="footer_info">
+                        <span><img src={logo}></img></span>
+                        <span>|</span>
+                        <span>生活需要仪式感</span>
+                        <span>|</span>
+                        <span>2021</span>
+                    </div>
+                    {/* <div className="footer_desc">版权</div> */}
+                </div>
+            </div>
+            <Bubble
+                commentsList={commentsList}
+                isOneself={isOneself}
+                deleteComment={deleteComment}
+            />
+            <Comments
+                sendCommentsCb={sendCommentsCb}
+                uploadImg={uploadImg}
+                sendVoice={sendVoice}
+                xStreamId={xStreamId}
+            />
+            {backgroundMusicUrl && <audio
+                src={backgroundMusicUrl}
+                autoPlay
+                loop
+            >
+                Your browser does not support the <code>audio</code> element.
+            </audio>}
+        </div>
     )
 }
 
