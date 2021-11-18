@@ -32,7 +32,7 @@ const myConfig = {
 const Home = () => {
   const [userInfo, setUserInfo] = useState({});
   const [isCreate, setIsCreate] = useState(true);
-  const [recordId, setRecordId] = useState('');
+  const [recordId, setRecordId] = useState('1');
   const xStreamId = useMemo(() => getXStreamIdOrParentId(), []);
 
   useEffect(() => {
