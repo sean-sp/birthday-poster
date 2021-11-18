@@ -58,13 +58,15 @@
         position: absolute;
         bottom: 0;
         left: 0;
+        display: flex;
+        padding-bottom: 0.2rem;
         // background: url(../../../../static/images/footer_hei.png) no-repeat;
         // background-size: 100%;
         .footer_info{
             width: 70%;
             height: 100%;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
         }
         img{
             width: 1.7rem;
@@ -83,15 +85,20 @@
         }
     }
     .qr_box{
-        width:1.3rem;
-        height: 1.3rem;
-        position: absolute;
-        right: 0.43rem;
-        bottom: 0.54rem;
+        
+        width:30%;
+        // position: absolute;
+        // right: 0.43rem;
+        // bottom: 0.54rem;
         z-index: 99;
+        text-align: right;
+        margin-right: 0.4rem;
         #img{
-            width: 100%!important;
-            height: 100%!important;
+            // width: 100%!important;
+            // height: 100%!important;
+            width:1.23rem!important;
+            height: 1.23rem!important;
+            
         }
     }
 }
@@ -99,9 +106,15 @@
     text-align: center;
 }
 .poster_img{
-    width: 3rem;
-    height: 4.5rem;
+    width: 5rem;
+    height: 8.5rem;
     margin: 0.2rem 0;
+}
+.poster_desc{
+    font-size: 0.2rem;
+    font-family: Microsoft YaHei;
+    font-weight: 400;
+    margin-bottom: 0.2rem;
 }
 
 @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3){

@@ -72,7 +72,7 @@ const Poster = (props) => {
         a.href = Url;
         a.download = `poster.png`;
         var e = document.createEvent('MouseEvents');
-        e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        e.initMouseEvent('click', false, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
         a.dispatchEvent(e);
         URL.revokeObjectURL(url);
     }
@@ -100,21 +100,23 @@ const Poster = (props) => {
                             <span>生日体还海马照F/W</span>
                         </div>
                     </div>
+                    <div className="qr_box">
+                        <canvas id="img"></canvas>
+                    </div>
                 </div>
-                <div className="qr_box">
-                    <canvas id="img"></canvas>
-                </div>
+                
             </div>
             {/* <img src={posterImg}></img> */}
             <Dialog
                 visible={show}
                 title="海报预览"
-                showCancelButton
+                closeable={true}
+                showConfirmButton={false}
                 className="poster_dialog"
-                onCancel={() => setShow(false)}
-                onConfirm={() => alert('confirm button click')}
-            >
+                onClose={() => setShow(false)}
+                >
                 <img className="poster_img" src={posterImg} alt="海报" />
+                <p className="poster_desc">长按上方图片分享给好友</p>
             </Dialog>
         </div>
     )
