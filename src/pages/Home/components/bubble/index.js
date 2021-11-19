@@ -22,6 +22,7 @@ const Bubble = (props) => {
     }, [audio]);
 
     const onCommentTap = (item) => {
+        console.log('dinaji',item)
         if (item.wishType === 'voice') {
             audio.src = item.wishVoiceUrl;
             audio.play();
@@ -51,10 +52,10 @@ const Bubble = (props) => {
     return (
         <div className="bubble_box">
             <ReactSeamlessScroll speed={30} style={{ width: '5rem', height: '3rem' }}>
-                <div className="bubble_item">
+                {/* <div   onClick={aad}> */}
                     {
                         commentsList.map((item) => (
-                            <div key={item.recordId} onClick={() => onCommentTap(item)}>
+                            <div key={item.recordId} className="bubble_item" onClick={() => onCommentTap(item)}>
                                 <img className='avatar' src={item.avatar} alt="avatar"></img>
                                 <span className="nickname">{item.nickname}:</span>
                                 {
@@ -64,7 +65,7 @@ const Bubble = (props) => {
                             </div>
                         ))
                     }
-                </div>
+                {/* </div> */}
             </ReactSeamlessScroll>
         </div>
     )

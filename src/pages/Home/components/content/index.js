@@ -190,11 +190,12 @@ const Content = (props) => {
                 </div>
                 <div className="footer_box" >
                     <div className="footer_info">
-                        <span><img src={logo}></img></span>
+                        <img src={logo}></img>
+                        {/* <span></span> */}
                         <span>|</span>
-                        <span>生活需要仪式感</span>
-                        <span>|</span>
-                        <span>2021</span>
+                        <span className="footer_txt">生活需要仪式感</span>
+                        {/* <span>|</span>
+                        <span>2021</span> */}
                     </div>
                     {/* <div className="footer_desc">版权</div> */}
                 </div>
