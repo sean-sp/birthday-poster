@@ -192,7 +192,7 @@ const Content = (props) => {
                     <div className="footer_info">
                         <img src={logo}></img>
                         {/* <span></span> */}
-                        <span>|</span>
+                        <span style={{ opacity: 0.8 }}>|</span>
                         <span className="footer_txt">生活需要仪式感</span>
                         {/* <span>|</span>
                         <span>2021</span> */}
