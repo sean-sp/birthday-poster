@@ -27,6 +27,10 @@ import mainHei from '../../../../static/images/main_hei.png'
 import mainHong from '../../../../static/images/main_hong.png'
 import mainLan from '../../../../static/images/main_lan.png'
 
+import receiveCoupon1 from '../../../../static/images/receive_coupon1.png'
+import receiveCoupon2 from '../../../../static/images/receive_coupon2.png'
+import closeImg from '../../../../static/images/close_img.png'
+
 const dataList = [
     // {
     //     avatar,
@@ -47,6 +51,8 @@ const Content = (props) => {
     const [isOneself, setIsOneself] = useState(false);
     const [posterShow, setPosterShow] = useState(false);
     const [posterImg, setPosterImg] = useState('');
+    const [coupon1Show, setCoupon1Show] = useState(false);
+    const [coupon2Show, setCoupon2Show] = useState(false);
 
     useEffect(() => {
         request.get(APIS.getDetail, { recordId }).then((res) => {
@@ -57,7 +63,8 @@ const Content = (props) => {
             setCommentsList(birthdayWishDTOList || []);
         }).catch((err) => {
             Toast(err.msg || '网络开小差了');
-        })
+        });
+        setCoupon1Show(true);
     }, []);
 
     const deleteComment = (item) => {
@@ -107,6 +114,7 @@ const Content = (props) => {
     }
 
     const uploadImg = () => {
+        setCoupon2Show(true);
         if (!isLogin()) return;
         wx.chooseImage({
             count: 1, // 默认9
@@ -171,6 +179,14 @@ const Content = (props) => {
         setPosterShow(false);
     }
 
+    const closeCoupon1 = () => {
+        setCoupon1Show(false);
+    }
+
+    const closeCoupon2 = () => {
+        setCoupon2Show(false);
+    }
+
     const { posterUrl, backgroundMusicUrl, modeType } = detail;
     const active = modeType + 1;
 
@@ -218,6 +234,25 @@ const Content = (props) => {
             >
                 Your browser does not support the <code>audio</code> element.
             </audio>}
+            {(coupon1Show || coupon2Show) && <div className="receive-coupon-mask">
+                {coupon1Show ? <div className="coupon1-content">
+                    <div className="coupon-content-content">
+                        <img src={receiveCoupon1} alt="coupon" />
+                        <div className="btn">免费领取</div>
+                    </div>
+                    <div className="close">
+                        <img src={closeImg} alt="close" onClick={closeCoupon1} />
+                    </div>
+                </div> : <div className="coupon2-content">
+                    <div className="coupon-content-content">
+                        <img src={receiveCoupon2} alt="coupon" />
+                        <div className="btn">我也要拍照</div>
+                    </div>
+                    <div className="close">
+                        <img src={closeImg} alt="close" onClick={closeCoupon2} />
+                    </div>
+                </div>}
+            </div>}
             <Poster
                 posterUrl={posterUrl}
                 active={active}

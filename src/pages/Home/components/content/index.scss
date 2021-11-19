@@ -83,6 +83,83 @@
             padding-bottom: 0.43rem;
         }
     }
+    .receive-coupon-mask{
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        z-index: 3;
+        .coupon1-content{
+            width: 6rem;
+            margin: 0 auto;
+            padding-top: 2.4rem;
+            .coupon-content-content{
+                position: relative;
+                width: 100%;
+                margin-bottom: 0.5rem;
+                img{
+                    width: 100%;
+                }
+                .btn{
+                    position: absolute;
+                    left: 50%;
+                    bottom: 0.6rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 4rem;
+                    height: 0.8rem;
+                    font-size: 0.34rem;
+                    color: #ffffff;
+                    background-color: #FF9FA9;
+                    border-radius: 0.4rem;
+                    transform: translateX(-50%);
+                }
+            }
+            .close{
+                text-align: center;
+                img{
+                    width: 0.64rem;
+                }
+            }
+        }
+        .coupon2-content{
+            width: 6rem;
+            margin: 0 auto;
+            padding-top: 2.4rem;
+            .coupon-content-content{
+                position: relative;
+                width: 100%;
+                margin-bottom: 0.5rem;
+                img{
+                    width: 100%;
+                }
+                .btn{
+                    position: absolute;
+                    left: 50%;
+                    bottom: 0.4rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 4rem;
+                    height: 0.8rem;
+                    font-size: 0.34rem;
+                    color: #ffffff;
+                    background-color: #FF9FA9;
+                    border-radius: 0.4rem;
+                    transform: translateX(-50%);
+                }
+            }
+            .close{
+                text-align: center;
+                img{
+                    width: 0.64rem;
+                }
+            }
+        }
+    }
 }
 .poster_dialog{
     text-align: center;
