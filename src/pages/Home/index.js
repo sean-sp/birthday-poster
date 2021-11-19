@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useEffect, useState, useMemo } from 'react';
 import wx from 'weixin-js-sdk';
-import { Toast } from 'react-vant';
+import { Toast, Loading } from 'react-vant';
 import Create from './components/create'
 import Content from './components/content'
 import { request, getXStreamIdOrParentId } from '../../utils';
@@ -31,7 +31,7 @@ const myConfig = {
 
 const Home = () => {
   const [userInfo, setUserInfo] = useState({});
-  const [isCreate, setIsCreate] = useState(true);
+  const [isCreate, setIsCreate] = useState('');
   const [recordId, setRecordId] = useState('1');
   const xStreamId = useMemo(() => getXStreamIdOrParentId(), []);
 
@@ -40,27 +40,31 @@ const Home = () => {
     if (parentId) {
       setRecordId(parentId);
     }
-    if (xStreamId) {
-      request.get(APIS.getJsConfig, { xStreamId }).then((res) => {
-        const wxConfig = JSON.parse(res.data).msg;
-        // console.log(wxConfig)
-        wx.config(wxConfig);
-        wx.error((res) => {
-          // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-          console.log(res);
-        });
-      }).catch((err) => {
-        Toast(err.msg || '网络开小差了');
-      });
-      request.get(APIS.getUserInfo, { xStreamId }).then((res) => {
-        const data = JSON.parse(res.data);
-        setUserInfo(data.msg || {});
-        setRecordId(data.recordId);
-        setIsCreate(data.isCreate);
-      }).catch((err) => {
-        Toast(err.msg || '网络开小差了');
-      });
+    if (!xStreamId) {
+      setTimeout(() => {
+        setIsCreate('true');
+      }, 1000)
+      return;
     }
+    request.get(APIS.getJsConfig, { xStreamId }).then((res) => {
+      const wxConfig = JSON.parse(res.data).msg;
+      // console.log(wxConfig)
+      wx.config(wxConfig);
+      wx.error((res) => {
+        // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+        console.log(res);
+      });
+    }).catch((err) => {
+      Toast(err.msg || '网络开小差了');
+    });
+    request.get(APIS.getUserInfo, { xStreamId }).then((res) => {
+      const data = JSON.parse(res.data);
+      setUserInfo(data.msg || {});
+      setRecordId(data.recordId);
+      setIsCreate(data.isCreate);
+    }).catch((err) => {
+      Toast(err.msg || '网络开小差了');
+    });
   }, []);
 
   useEffect(() => {
@@ -85,7 +89,7 @@ const Home = () => {
 
   return (
     <div className="content">
-      {isCreate ?
+      {isCreate ? (isCreate === 'true' ?
         <Content
           recordId={recordId}
           userInfo={userInfo}
@@ -96,7 +100,7 @@ const Home = () => {
           closeCreate={closeCreate}
           setRecordIdCb={setRecordIdCb}
           xStreamId={xStreamId}
-        />}
+        />) : <Loading type="ball" className="center-loading" />}
     </div >
   )
 }
