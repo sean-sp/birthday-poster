@@ -28,7 +28,8 @@ import mainHong from '../../../../static/images/main_hong.png'
 import mainLan from '../../../../static/images/main_lan.png'
 
 import receiveCoupon1 from '../../../../static/images/receive_coupon1.png'
-import receiveCoupon2 from '../../../../static/images/receive_coupon2.png'
+import couponTitle from '../../../../static/images/receive_coupon_title.png'
+import receiveCoupon2 from '../../../../static/images/share_img.png'
 import closeImg from '../../../../static/images/close_img.png'
 
 const dataList = [
@@ -51,7 +52,7 @@ const Content = (props) => {
     const [isOneself, setIsOneself] = useState(false);
     const [posterShow, setPosterShow] = useState(false);
     const [posterImg, setPosterImg] = useState('');
-    const [qrSrc, setQSrc] = useState('')
+    const [qrSrc, setQrSrc] = useState('');
     const [coupon1Show, setCoupon1Show] = useState(false);
     const [coupon2Show, setCoupon2Show] = useState(false);
 
@@ -66,6 +67,15 @@ const Content = (props) => {
             Toast(err.msg || '网络开小差了');
         });
         setCoupon1Show(true);
+        if (xStreamId) {
+            request.post(APIS.getQrCode, {
+                page: 'pages/index/index',
+                scene: `parentId=${recordId}`,
+                xstreamId: xStreamId
+            }).then((res) => {
+                setQrSrc(res.data);
+            })
+        }
     }, []);
 
     const deleteComment = (item) => {
@@ -115,7 +125,7 @@ const Content = (props) => {
     }
 
     const uploadImg = () => {
-        setCoupon2Show(true);
+        // setCoupon2Show(true);
         if (!isLogin()) return;
         wx.chooseImage({
             count: 1, // 默认9
@@ -151,7 +161,6 @@ const Content = (props) => {
         // QRCode.toCanvas(document.getElementById("img"), 'https://www.baidu.com/', {
         //     margin: 1,
         // });
-        console.log('ad',document.getElementById("img"))
         // 获取自定义的dom  元素
         const posterDom = posterRef.current;
         const width = posterDom.offsetWidth;
@@ -240,7 +249,12 @@ const Content = (props) => {
                 {coupon1Show ? <div className="coupon1-content">
                     <div className="coupon-content-content">
                         <img src={receiveCoupon1} alt="coupon" />
-                        <div className="btn">免费领取</div>
+                        <div className="bottom-content">
+                            <div className="title-img">
+                                <img src={couponTitle} alt="couponTitle" />
+                            </div>
+                            <div className="btn">免费领取</div>
+                        </div>
                     </div>
                     <div className="close">
                         <img src={closeImg} alt="close" onClick={closeCoupon1} />

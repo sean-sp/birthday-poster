@@ -157,5 +157,5 @@
     "node-sass": "^6.0.1",
     "qrcode": "^1.4.4"
   },
-  "proxy": "http://47.242.179.86:8001"
+  "proxy": "https://crm-birthday.dev.hzmantu.com"
 }

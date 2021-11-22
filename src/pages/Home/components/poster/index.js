@@ -38,9 +38,9 @@ const Poster = (props, ref) => {
                         <span>新的一岁你想对我说的是什么？快来扫码吧～</span>
                     </div>
                 </div>
-                <div className="qr_box">
-                    <img id="img" src={qrSrc}></img>
-                </div>
+                {qrSrc && <div className="qr_box">
+                    <img src={qrSrc}></img>
+                </div>}
             </div>
 
         </div>

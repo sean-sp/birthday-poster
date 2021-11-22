@@ -5,7 +5,6 @@ import { isLogin } from '../../../../utils';
 import wx from 'weixin-js-sdk';
 import './index.scss';
 import voiceImg from '../../../../static/images/voice.png'
-// import voiceImg from '../../../../static/images/voice.jpeg'
 import voiceIcon from '../../../../static/images/voice.gif'
 
 const Bubble = (props) => {
@@ -36,22 +35,22 @@ const Bubble = (props) => {
         }
     }
 
-    const onParentTap = (ev) =>{
+    const onParentTap = (ev) => {
         ev.stopPropagation();
         // console.log(ev.target,ev.target.dataset,ev.target.getAttribute("data-item"))
-        if(ev.target.tagName === "DIV" || ev.target.tagName === "SPAN" || ev.target.tagName === "IMG"){
+        if (ev.target.tagName === "DIV" || ev.target.tagName === "SPAN" || ev.target.tagName === "IMG") {
             let item = {
-                wishType:ev.target.getAttribute("data-item"),
-                wishVoiceUrl:ev.target.getAttribute("data-item1"),
-                wishPicUrl:ev.target.getAttribute("data-item2"),
-                recordId:Number(ev.target.getAttribute("data-id"))
+                wishType: ev.target.getAttribute("data-item"),
+                wishVoiceUrl: ev.target.getAttribute("data-item1"),
+                wishPicUrl: ev.target.getAttribute("data-item2"),
+                recordId: Number(ev.target.getAttribute("data-id"))
             }
-            if(ev.target.getAttribute("data-type") && ev.target.getAttribute("data-type") === 'delete'){
+            if (ev.target.getAttribute("data-type") && ev.target.getAttribute("data-type") === 'delete') {
                 deleteTap(item)
-            }else{
+            } else {
                 onCommentTap(item)
             }
-            
+
         }
     }
 
@@ -75,11 +74,11 @@ const Bubble = (props) => {
                             <img className='avatar' data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl} src={item.avatar} alt="avatar"></img>
                             <span className="nickname" data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl}>{item.nickname}:</span>
                             {
-                                item.wishType === 'text' ? <span data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl}>{item.wishContent}</span> : 
-                                item.wishType === 'img' ? <img className="bubble_img" data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl} src={item.wishPicUrl} alt="avatar"></img> : 
-                                <span className='voice_icon' data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl}>
-                                    <img src={activeVoice === item.recordId ? voiceIcon : voiceImg} data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl} alt="voice"/>
-                                </span>
+                                item.wishType === 'text' ? <span data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl}>{item.wishContent}</span> :
+                                    item.wishType === 'img' ? <img className="bubble_img" data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl} src={item.wishPicUrl} alt="avatar"></img> :
+                                        <span className='voice_icon' data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl}>
+                                            <img src={activeVoice === item.recordId ? voiceIcon : voiceImg} data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl} alt="voice" />
+                                        </span>
                             }
                             {!isOneself && <span className='delete' data-type='delete' data-id={item.recordId} >x</span>}
                             {/* onClick={(e) => deleteTap(e, item)} */}

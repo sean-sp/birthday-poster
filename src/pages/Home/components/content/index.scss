@@ -102,20 +102,26 @@
                 img{
                     width: 100%;
                 }
-                .btn{
+                .bottom-content{
                     position: absolute;
                     left: 50%;
                     bottom: 0.6rem;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
                     width: 4rem;
-                    height: 0.8rem;
-                    font-size: 0.34rem;
-                    color: #ffffff;
-                    background-color: #FF9FA9;
-                    border-radius: 0.4rem;
                     transform: translateX(-50%);
+                    .title-img{
+                        margin-bottom: 0.4rem;
+                    }
+                    .btn{
+                    
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        height: 0.8rem;
+                        font-size: 0.34rem;
+                        color: #ffffff;
+                        background-color: #FF9FA9;
+                        border-radius: 0.4rem;
+                    }
                 }
             }
             .close{
