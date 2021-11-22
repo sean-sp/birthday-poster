@@ -18,7 +18,6 @@ import mainLan from '../../../../static/images/main_lan.png'
 
 const Poster = (props, ref) => {
     const { posterUrl, active } = props;
-
     return (
         <div ref={ref} className="poster_box" style={{ background: active === 1 ? 'linear-gradient(55deg, #9DB6CF, #607798)' : active === 2 ? 'linear-gradient(-55deg, #A2A2AB, #92929B)' : active === 3 ? 'linear-gradient(-55deg, #F0BCC0, #934A55)' : 'linear-gradient(-55deg, #9B9BA7, #8A8793)' }}>
             <div className="top_box">

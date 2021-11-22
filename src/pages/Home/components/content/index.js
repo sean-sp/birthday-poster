@@ -142,6 +142,7 @@ const Content = (props) => {
         QRCode.toCanvas(document.getElementById("img"), 'https://www.baidu.com/', {
             margin: 1,
         });
+        console.log('ad',document.getElementById("img"))
         // 获取自定义的dom  元素
         const posterDom = posterRef.current;
         const width = posterDom.offsetWidth;
