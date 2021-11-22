@@ -33,9 +33,9 @@ const Poster = (props, ref) => {
             <div className="footer_box" >
                 <div className="footer_info">
                     <span><img src={logo}></img></span>
-                    <div>
-                        <span>换新亮相NEW LOOK</span>
-                        <span>生日体还海马照F/W</span>
+                    <div style={{ textAlign: 'left', lineHeight: '0.3rem' }}>
+                        <span>大梦不觉，又是一年</span>
+                        <span>新的一岁你想对我说的是什么？快来扫码吧～</span>
                     </div>
                 </div>
                 <div className="qr_box">

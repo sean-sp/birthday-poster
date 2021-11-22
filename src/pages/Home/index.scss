@@ -2,6 +2,11 @@
   width: 100vw;
   height: 100vh;
   position: relative;
-  // background-image: linear-gradient(#a9cde5, #8bafc6);
+}
+.center-loading{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
