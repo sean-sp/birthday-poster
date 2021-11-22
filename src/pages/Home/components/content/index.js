@@ -47,6 +47,7 @@ const Content = (props) => {
     const [isOneself, setIsOneself] = useState(false);
     const [posterShow, setPosterShow] = useState(false);
     const [posterImg, setPosterImg] = useState('');
+    const [qrSrc, setQSrc] = useState('')
 
     useEffect(() => {
         request.get(APIS.getDetail, { recordId }).then((res) => {
@@ -139,9 +140,9 @@ const Content = (props) => {
     }
 
     const onShare = () => {
-        QRCode.toCanvas(document.getElementById("img"), 'https://www.baidu.com/', {
-            margin: 1,
-        });
+        // QRCode.toCanvas(document.getElementById("img"), 'https://www.baidu.com/', {
+        //     margin: 1,
+        // });
         console.log('ad',document.getElementById("img"))
         // 获取自定义的dom  元素
         const posterDom = posterRef.current;
@@ -222,6 +223,7 @@ const Content = (props) => {
             <Poster
                 posterUrl={posterUrl}
                 active={active}
+                qrSrc={qrSrc}
                 ref={posterRef}
             />
             <Dialog
