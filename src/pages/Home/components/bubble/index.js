@@ -66,7 +66,7 @@ const Bubble = (props) => {
 
     return (
         <div className="bubble_box" onClick={onParentTap}>
-            <ReactSeamlessScroll speed={30} style={{ width: '5rem', height: '3rem' }}>
+            <ReactSeamlessScroll speed={20} style={{ width: '5rem', height: '3rem' }}>
                 {
                     // onClick={() => onCommentTap(item)}
                     commentsList.map((item) => (
@@ -74,10 +74,10 @@ const Bubble = (props) => {
                             <img className='avatar' data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl} src={item.avatar} alt="avatar"></img>
                             <span className="nickname" data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl}>{item.nickname}:</span>
                             {
-                                item.wishType === 'text' ? <span data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl}>{item.wishContent}</span> :
-                                    item.wishType === 'img' ? <img className="bubble_img" data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl} src={item.wishPicUrl} alt="avatar"></img> :
-                                        <span className='voice_icon' data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl}>
-                                            <img src={activeVoice === item.recordId ? voiceIcon : voiceImg} data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl} alt="voice" />
+                                item.wishType === 'text' ? <span data-id={item.recordId} data-item={item.wishType}>{item.wishContent}</span> :
+                                    item.wishType === 'img' ? <img className="bubble_img" data-id={item.recordId} data-item={item.wishType} data-item2={item.wishPicUrl} src={item.wishPicUrl} alt="avatar"></img> :
+                                        <span className='voice_icon' data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl}>
+                                            <img src={activeVoice === item.recordId ? voiceIcon : voiceImg} data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} alt="voice" />
                                         </span>
                             }
                             {!isOneself && <span className='delete' data-type='delete' data-id={item.recordId} >x</span>}
