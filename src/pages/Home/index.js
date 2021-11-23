@@ -80,7 +80,7 @@ const Home = () => {
   }, []);
 
   const closeCreate = () => {
-    setIsCreate('false');
+    setIsCreate('true');
   }
 
   const setRecordIdCb = (recordId) => {

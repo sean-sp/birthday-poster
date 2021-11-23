@@ -107,7 +107,7 @@ const Content = (props) => {
             isShowProgressTips: 1, // 默认为1，显示进度提示
             success: (res) => {
                 const serverId = res.serverId; // 返回音频的服务器端ID
-                request.get(APIS.uploadFile, { fileType: 2, mediaId: serverId, xstreamId: xStreamId }).then((res) => {
+                request.post(APIS.uploadFile, { fileType: 2, mediaId: serverId, xstreamId: xStreamId }).then((res) => {
                     const { id, name, avatar } = userInfo;
                     request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishVoiceUrl: res.data, wishType: 'voice' }).then(() => {
                         request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
@@ -138,7 +138,7 @@ const Content = (props) => {
                     isShowProgressTips: 1, // 默认为1，显示进度提示
                     success: (res) => {
                         const serverId = res.serverId; // 返回图片的服务器端ID
-                        request.get(APIS.uploadFile, { fileType: 1, mediaId: serverId, xstreamId: xStreamId }).then((res) => {
+                        request.post(APIS.uploadFile, { fileType: 1, mediaId: serverId, xstreamId: xStreamId }).then((res) => {
                             const { id, name, avatar } = userInfo;
                             request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishPicUrl: res.data, wishType: 'img' }).then((res) => {
                                 request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
