@@ -158,6 +158,7 @@ const Content = (props) => {
     }
 
     const onShare = () => {
+        if (!isLogin()) return;
         // QRCode.toCanvas(document.getElementById("img"), 'https://www.baidu.com/', {
         //     margin: 1,
         // });

@@ -46,7 +46,7 @@ const Home = () => {
       }, 1000)
       return;
     }
-    request.get(APIS.getJsConfig, { xStreamId }).then((res) => {
+    request.get(APIS.getJsConfig, { baseURL: `${window.location.origin}/`, xStreamId }).then((res) => {
       const wxConfig = JSON.parse(res.data).msg;
       // console.log(wxConfig)
       wx.config(wxConfig);
