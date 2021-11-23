@@ -39,7 +39,7 @@ const Poster = (props, ref) => {
                     </div>
                 </div>
                 {qrSrc && <div className="qr_box">
-                    <img src={qrSrc}></img>
+                    <img src={qrSrc} id="img"></img>
                 </div>}
             </div>
 
