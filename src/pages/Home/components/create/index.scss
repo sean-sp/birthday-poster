@@ -52,11 +52,13 @@
         justify-content: center;
         cursor: pointer;
         z-index: 3;
+        vertical-align: middle;
     }
     .add_icon{
         font-size: 0.5rem;
         margin-right: 0.2rem;
         // margin-bottom: 0.1rem;
+        vertical-align: middle;
         display: inline-block;
     }
     .main_kuang{
