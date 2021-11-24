@@ -27,25 +27,7 @@ import huiImg from '../../../../static/images/sticker_hui.png'
 import hongImg from '../../../../static/images/sticker_hong.png'
 import heiImg from '../../../../static/images/sticker_hei.png'
 
-import footerHei from '../../../../static/images/footer_hei.png'
-import footerHui from '../../../../static/images/footer_hui.png'
-import footerLan from '../../../../static/images/footer_lan.png'
-import footerHong from '../../../../static/images/footer_hong.png'
-
 import closeIcon from '../../../../static/images/close_icon.png'
-
-const footer_hei = {
-    background: `url(${footerHei}) no-repeat`,
-};
-const footer_hui = {
-    background: `url(${footerHui}) no-repeat`,
-};
-const footer_lan = {
-    background: `url(${footerLan}) no-repeat`,
-};
-const footer_hong = {
-    background: `url(${footerHong}) no-repeat`,
-};
 
 let localId = '';
 let val = '';
@@ -194,17 +176,6 @@ const Create = (props) => {
                 <div className="message" style={{ background: active == 1 ? '#8499B0' : active == 2 ? '#AEB1BC' : active == 3 ? '#D99FA6' : '#A9A7B4' }} onClick={message} >
                     <Icon name="chat-o" color="#fff" size="1rem" />
                 </div>
-                {/* style={active == 1 ? footer_lan : active == 2 ? footer_hui :active == 3 ? footer_hong :footer_hei}> */}
-                {/* <div className="footer_box" >
-                    <div className="footer_info">
-                        <span><img src={logo}></img></span>
-                        <span>|</span>
-                        <span>生活需要仪式感</span>
-                        <span>|</span>
-                        <span>2021</span>
-                    </div>
-                    <div className="footer_desc">版权</div>
-                </div> */}
             </div>
             {
                 showMessage ?
