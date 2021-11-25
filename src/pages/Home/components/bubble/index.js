@@ -80,7 +80,7 @@ const Bubble = (props) => {
                                             <img src={activeVoice === item.recordId ? voiceIcon : voiceImg} data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} alt="voice" />
                                         </span>
                             }
-                            {!isOneself && <span className='delete' data-type='delete' data-id={item.recordId} >x</span>}
+                            {isOneself && <span className='delete' data-type='delete' data-id={item.recordId} >x</span>}
                             {/* onClick={(e) => deleteTap(e, item)} */}
                         </div>
                     ))

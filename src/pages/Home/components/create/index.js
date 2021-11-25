@@ -1,13 +1,12 @@
 /* eslint-disable */
 import React, { useState } from 'react';
-import { Toast, Field, Icon } from 'react-vant';
+import { Toast, Field, Icon, Loading } from 'react-vant';
 import wx from 'weixin-js-sdk';
 import { request, isLogin } from '../../../../utils';
 import APIS from '../../../../configs';
 import './index.scss';
 
 import titleHui from '../../../../static/images/title_hui.png'
-import logo from '../../../../static/images/logo.png'
 
 import backImg from '../../../../static/images/back_icon.png'
 import sureImg from '../../../../static/images/sure_icon.png'
@@ -57,6 +56,7 @@ const Create = (props) => {
     const [avatar, setAvatar] = useState('');
     const [msgValue, setMsgValue] = useState('');
     const [showMessage, setShowMessage] = useState(false);
+    const [isCreating, setIsCreating] = useState(false);
 
     const changeSticker = (val) => {
         setActive(val.key)
@@ -122,6 +122,7 @@ const Create = (props) => {
             Toast('请先上传照片');
             return;
         }
+        setIsCreating(true);
         wx.uploadImage({
             localId, // 需要上传的图片的本地ID，由chooseImage接口获得
             isShowProgressTips: 1, // 默认为1，显示进度提示
@@ -136,18 +137,22 @@ const Create = (props) => {
                         xStreamId
                     }).then((res) => {
                         setRecordIdCb(res.data);
+                        setIsCreating(false);
                         Toast({
                             message: '创建成功',
                             onClose: closeCreate
                         });
                     }).catch((err) => {
+                        setIsCreating(false);
                         Toast(err.msg);
                     })
                 }).catch((err) => {
+                    setIsCreating(false);
                     Toast(err.msg);
                 })
             },
             fail: () => {
+                setIsCreating(false);
                 Toast('请检查接口权限');
             }
         });
@@ -211,6 +216,7 @@ const Create = (props) => {
                     }
                 </div>
             </div>
+            {isCreating && <Loading type="ball" className="center-loading" />}
         </div>
     )
 }

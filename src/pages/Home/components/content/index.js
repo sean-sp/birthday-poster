@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useState, useEffect, useRef } from 'react';
-import { Toast, Dialog } from 'react-vant';
+import { Toast, Dialog, Loading } from 'react-vant';
 import wx from 'weixin-js-sdk';
 import QRCode from "qrcode";
 import html2canvas from "html2canvas";
@@ -27,9 +27,8 @@ import mainHei from '../../../../static/images/main_hei.png'
 import mainHong from '../../../../static/images/main_hong.png'
 import mainLan from '../../../../static/images/main_lan.png'
 
-import receiveCoupon1 from '../../../../static/images/receive_coupon1.png'
+import receiveCoupon from '../../../../static/images/receive_coupon.png'
 import couponTitle from '../../../../static/images/receive_coupon_title.png'
-import receiveCoupon2 from '../../../../static/images/share_img.png'
 import closeImg from '../../../../static/images/close_img.png'
 
 const dataList = [
@@ -53,8 +52,8 @@ const Content = (props) => {
     const [posterShow, setPosterShow] = useState(false);
     const [posterImg, setPosterImg] = useState('');
     const [qrSrc, setQrSrc] = useState('');
-    const [coupon1Show, setCoupon1Show] = useState(false);
-    const [coupon2Show, setCoupon2Show] = useState(false);
+    const [couponShow, setCouponShow] = useState(false);
+    const [isBubbleShow, setIsBubbleShow] = useState(true);
 
     useEffect(() => {
         request.get(APIS.getDetail, { recordId }).then((res) => {
@@ -66,7 +65,6 @@ const Content = (props) => {
         }).catch((err) => {
             Toast(err.msg || '网络开小差了');
         });
-        setCoupon1Show(true);
         if (xStreamId) {
             request.post(APIS.getQrCode, {
                 page: 'pages/index/index',
@@ -79,13 +77,15 @@ const Content = (props) => {
     }, []);
 
     const deleteComment = (item) => {
+        setIsBubbleShow(false);
         request.post(APIS.deleteBirthdayWish, { recordId: item.recordId }).then(() => {
             request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
                 setCommentsList(res.data || []);
-                Toast('删除成功');
+                setIsBubbleShow(true);
             })
         }).catch((err) => {
             Toast(err.msg);
+            setIsBubbleShow(true);
         })
     }
 
@@ -94,7 +94,12 @@ const Content = (props) => {
         request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishContent: comment, wishType: 'text' }).then(() => {
             request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
                 setCommentsList(res.data || []);
-                Toast('提交成功');
+                Toast({
+                    message: '提交成功',
+                    onClose: () => {
+                        setCouponShow(true);
+                    }
+                });
             })
         }).catch((err) => {
             Toast(err.msg);
@@ -112,7 +117,12 @@ const Content = (props) => {
                     request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishVoiceUrl: res.data, wishType: 'voice' }).then(() => {
                         request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
                             setCommentsList(res.data || []);
-                            Toast('提交成功');
+                            Toast({
+                                message: '提交成功',
+                                onClose: () => {
+                                    setCouponShow(true);
+                                }
+                            });
                         })
                     }).catch((err) => {
                         Toast(err.msg);
@@ -125,7 +135,6 @@ const Content = (props) => {
     }
 
     const uploadImg = () => {
-        // setCoupon2Show(true);
         if (!isLogin()) return;
         wx.chooseImage({
             count: 1, // 默认9
@@ -143,7 +152,12 @@ const Content = (props) => {
                             request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishPicUrl: res.data, wishType: 'img' }).then((res) => {
                                 request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
                                     setCommentsList(res.data || []);
-                                    Toast('提交成功');
+                                    Toast({
+                                        message: '提交成功',
+                                        onClose: () => {
+                                            setCouponShow(true);
+                                        }
+                                    });
                                 })
                             }).catch((err) => {
                                 Toast(err.msg);
@@ -191,12 +205,8 @@ const Content = (props) => {
         setPosterShow(false);
     }
 
-    const closeCoupon1 = () => {
-        setCoupon1Show(false);
-    }
-
-    const closeCoupon2 = () => {
-        setCoupon2Show(false);
+    const closeCoupon = () => {
+        setCouponShow(false);
     }
 
     const { posterUrl, backgroundMusicUrl, modeType } = detail;
@@ -228,11 +238,11 @@ const Content = (props) => {
                     {/* <div className="footer_desc">版权</div> */}
                 </div>
             </div>
-            <Bubble
+            {isBubbleShow ? <Bubble
                 commentsList={commentsList}
                 isOneself={isOneself}
                 deleteComment={deleteComment}
-            />
+            /> : <Loading type="ball" className="center-loading" />}
             <Comments
                 sendCommentsCb={sendCommentsCb}
                 uploadImg={uploadImg}
@@ -246,10 +256,10 @@ const Content = (props) => {
             >
                 Your browser does not support the <code>audio</code> element.
             </audio>}
-            {(coupon1Show || coupon2Show) && <div className="receive-coupon-mask">
-                {coupon1Show ? <div className="coupon1-content">
+            {couponShow && <div className="receive-coupon-mask">
+                <div className="coupon-content">
                     <div className="coupon-content-content">
-                        <img src={receiveCoupon1} alt="coupon" />
+                        <img src={receiveCoupon} alt="coupon" />
                         <div className="bottom-content">
                             <div className="title-img">
                                 <img src={couponTitle} alt="couponTitle" />
@@ -258,17 +268,9 @@ const Content = (props) => {
                         </div>
                     </div>
                     <div className="close">
-                        <img src={closeImg} alt="close" onClick={closeCoupon1} />
+                        <img src={closeImg} alt="close" onClick={closeCoupon} />
                     </div>
-                </div> : <div className="coupon2-content">
-                    <div className="coupon-content-content">
-                        <img src={receiveCoupon2} alt="coupon" />
-                        <div className="btn">我也要拍照</div>
-                    </div>
-                    <div className="close">
-                        <img src={closeImg} alt="close" onClick={closeCoupon2} />
-                    </div>
-                </div>}
+                </div>
             </div>}
             <Poster
                 posterUrl={posterUrl}
