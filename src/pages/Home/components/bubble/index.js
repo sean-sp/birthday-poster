@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Dialog } from 'react-vant';
-import ReactSeamlessScroll from 'react-seamless-scroll';
+// import ReactSeamlessScroll from 'react-seamless-scroll';
+import JsSeamlessScroll from "react-seamless-scroll";
 import { isLogin } from '../../../../utils';
 import wx from 'weixin-js-sdk';
 import './index.scss';
@@ -66,7 +67,7 @@ const Bubble = (props) => {
 
     return (
         <div className="bubble_box" onClick={onParentTap}>
-            <ReactSeamlessScroll speed={20} style={{ width: '5rem', height: '3rem' }}>
+            <JsSeamlessScroll datas={commentsList} scrollSwitch={true} speed={20} style={{ width: '5rem', height: '3rem' }}>
                 {
                     // onClick={() => onCommentTap(item)}
                     commentsList.map((item) => (
@@ -85,7 +86,7 @@ const Bubble = (props) => {
                         </div>
                     ))
                 }
-            </ReactSeamlessScroll>
+            </JsSeamlessScroll>
         </div>
     )
 }
