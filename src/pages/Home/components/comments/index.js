@@ -115,6 +115,7 @@ const Comments = (props) => {
     if (!isLogin()) return;
     if (inputVal) {
       setInputVal('');
+      setSendVisible(false);
       sendCommentsCb(inputVal);
     }
   }
