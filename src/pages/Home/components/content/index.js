@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Toast, Dialog, Loading } from 'react-vant';
 import wx from 'weixin-js-sdk';
-import QRCode from "qrcode";
 import html2canvas from "html2canvas";
 import { request, isLogin } from '../../../../utils';
 import APIS from '../../../../configs';
@@ -27,9 +26,9 @@ import mainHei from '../../../../static/images/main_hei.png'
 import mainHong from '../../../../static/images/main_hong.png'
 import mainLan from '../../../../static/images/main_lan.png'
 
-import receiveCoupon from '../../../../static/images/receive_coupon.png'
-import couponTitle from '../../../../static/images/receive_coupon_title.png'
+import receiveCoupon from '../../../../static/images/share_img.png'
 import closeImg from '../../../../static/images/close_img.png'
+import birthdayMp3 from '../../../../static/audio/birthday.mp3'
 
 const dataList = [
     // {
@@ -67,7 +66,7 @@ const Content = (props) => {
         });
         if (xStreamId) {
             request.post(APIS.getQrCode, {
-                page: 'pages/index/index',
+                page: 'pages/webview/index',
                 scene: `parentId=${recordId}`,
                 xstreamId: xStreamId
             }).then((res) => {
@@ -209,7 +208,11 @@ const Content = (props) => {
         setCouponShow(false);
     }
 
-    const { posterUrl, backgroundMusicUrl, modeType } = detail;
+    const goHome = () => {
+        wx.miniProgram.navigateTo({ url: '/pages/index/index' });
+    }
+
+    const { posterUrl, modeType } = detail;
     const active = modeType + 1;
 
     return (
@@ -249,22 +252,19 @@ const Content = (props) => {
                 sendVoice={sendVoice}
                 xStreamId={xStreamId}
             />
-            {backgroundMusicUrl && <audio
-                src={backgroundMusicUrl}
+            <audio
+                src={birthdayMp3}
                 autoPlay
                 loop
             >
                 Your browser does not support the <code>audio</code> element.
-            </audio>}
+            </audio>
             {couponShow && <div className="receive-coupon-mask">
                 <div className="coupon-content">
                     <div className="coupon-content-content">
                         <img src={receiveCoupon} alt="coupon" />
-                        <div className="bottom-content">
-                            <div className="title-img">
-                                <img src={couponTitle} alt="couponTitle" />
-                            </div>
-                            <div className="btn">免费领取</div>
+                        <div className="bottom-content" onClick={goHome}>
+                            <div className="btn">我也要拍照</div>
                         </div>
                     </div>
                     <div className="close">
