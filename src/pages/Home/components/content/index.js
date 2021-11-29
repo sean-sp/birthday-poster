@@ -66,7 +66,7 @@ const Content = (props) => {
         });
         if (xStreamId) {
             request.post(APIS.getQrCode, {
-                page: 'pages/webview/index',
+                page: `pages/webview/index?url=${window.location.origin}/#/?parentId=${recordId}`,
                 scene: `parentId=${recordId}`,
                 xstreamId: xStreamId
             }).then((res) => {
