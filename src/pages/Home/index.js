@@ -73,7 +73,7 @@ const Home = () => {
         data: {
           title: '生日照',
           imageUrl: shareImg,
-          path: `/pages/webview/index?${window.location.origin}/-._/!parentId=${recordId}`
+          path: `/pages/webview/index?url=${window.location.origin}/-._/!parentId=${recordId}`
         }
       })
     });

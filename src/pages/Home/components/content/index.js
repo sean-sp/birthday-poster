@@ -255,6 +255,7 @@ const Content = (props) => {
                 src={birthdayMp3}
                 autoPlay
                 loop
+                id="posterMusic"
             >
                 Your browser does not support the <code>audio</code> element.
             </audio>

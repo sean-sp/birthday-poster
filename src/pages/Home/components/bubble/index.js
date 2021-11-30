@@ -14,13 +14,17 @@ const Bubble = (props) => {
 
     useEffect(() => {
         audio.addEventListener('ended', () => {
-            setActiveVoice(-1)
+            const posterMusic = document.getElementById('posterMusic');
+            posterMusic.play();
+            setActiveVoice(-1);
         }, false);
     }, [audio]);
 
     const onCommentTap = (item) => {
         // console.log('dinaji',item)
         if (item.wishType === 'voice') {
+            const posterMusic = document.getElementById('posterMusic');
+            posterMusic.pause();
             audio.src = item.wishVoiceUrl;
             audio.play();
             setActiveVoice(item.recordId)
