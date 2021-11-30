@@ -68,15 +68,13 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    wx.ready(() => {
-      wx.miniProgram.postMessage({
-        data: {
-          title: '生日照',
-          imageUrl: shareImg,
-          path: `/pages/webview/index?url=${window.location.origin}/-._/!parentId=${recordId}`
-        }
-      })
-    });
+    wx.miniProgram.postMessage({
+      data: {
+        title: '生日照',
+        imageUrl: shareImg,
+        path: `/pages/webview/index?url=${window.location.origin}/-._/!parentId=${recordId}`
+      }
+    })
   }, []);
 
   const closeCreate = () => {
