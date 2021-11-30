@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Toast, Dialog, Loading } from 'react-vant';
 import wx from 'weixin-js-sdk';
 import html2canvas from "html2canvas";
+import { MusicSvgComponent } from '../svg'
 import { request, isLogin } from '../../../../utils';
 import APIS from '../../../../configs';
 import Comments from '../comments';
@@ -53,6 +54,7 @@ const Content = (props) => {
     const [qrSrc, setQrSrc] = useState('');
     const [couponShow, setCouponShow] = useState(false);
     const [isBubbleShow, setIsBubbleShow] = useState(true);
+    const [musicPlaying, setMusicPlaying] = useState(false);
 
     useEffect(() => {
         request.get(APIS.getDetail, { recordId }).then((res) => {
@@ -72,6 +74,16 @@ const Content = (props) => {
                 setQrSrc(res.data);
             })
         }
+    }, []);
+
+    useEffect(() => {
+        const posterMusic = document.getElementById('posterMusic');
+        posterMusic.addEventListener('playing', () => {
+            setMusicPlaying(true);
+        }, false);
+        posterMusic.addEventListener('pause', () => {
+            setMusicPlaying(false);
+        }, false);
     }, []);
 
     const deleteComment = (item) => {
@@ -211,6 +223,15 @@ const Content = (props) => {
         wx.miniProgram.navigateTo({ url: '/pages/index/index' });
     }
 
+    const onMusicPlay = () => {
+        const posterMusic = document.getElementById('posterMusic');
+        if (posterMusic.paused) {
+            posterMusic.play();
+        } else {
+            posterMusic.pause();
+        }
+    }
+
     const { posterUrl, modeType } = detail;
     const active = modeType + 1;
 
@@ -222,6 +243,9 @@ const Content = (props) => {
                     <img className="top_title" src={titleHui}></img>
                 </div>
                 <img className="share_icon" src={shareIcon} onClick={onShare}></img>
+                <div className={`music-icon ${musicPlaying ? 'active' : ''}`} onClick={onMusicPlay}>
+                    <MusicSvgComponent />
+                </div>
                 <div className="main_box">
                     <img className="main_kuang" src={active === 1 ? mainLan : active === 2 ? mainHui : active === 3 ? mainHong : mainHei}></img>
                     {

@@ -14,8 +14,6 @@ const Bubble = (props) => {
 
     useEffect(() => {
         audio.addEventListener('ended', () => {
-            const posterMusic = document.getElementById('posterMusic');
-            posterMusic.play();
             setActiveVoice(-1);
         }, false);
     }, [audio]);
@@ -24,7 +22,9 @@ const Bubble = (props) => {
         // console.log('dinaji',item)
         if (item.wishType === 'voice') {
             const posterMusic = document.getElementById('posterMusic');
-            posterMusic.pause();
+            if (!posterMusic.paused) {
+                posterMusic.pause();
+            }
             audio.src = item.wishVoiceUrl;
             audio.play();
             setActiveVoice(item.recordId)

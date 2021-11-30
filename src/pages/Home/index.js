@@ -10,29 +10,29 @@ import './index.scss';
 
 const shareImg = require('../../static/images/share_img.png').default;
 
-const myConfig = {
-  debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-  appId: 'wxcdb66d9a27951efe', // 必填，公众号的唯一标识
-  timestamp: '1636964029', // 必填，生成签名的时间戳
-  nonceStr: 'test', // 必填，生成签名的随机串
-  signature: 'b869d215abd7474fd0cd40e36462804f0c4c22d7',// 必填，签名
-  jsApiList: [
-    'checkJsApi',
-    'chooseImage',
-    'getLocalImgData',
-    'uploadImage',
-    'previewImage',
-    'startRecord',
-    'stopRecord',
-    'onVoiceRecordEnd',
-    'uploadVoice'
-  ] // 必填，需要使用的JS接口列表
-};
+// const myConfig = {
+//   debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+//   appId: 'wxcdb66d9a27951efe', // 必填，公众号的唯一标识
+//   timestamp: '1636964029', // 必填，生成签名的时间戳
+//   nonceStr: 'test', // 必填，生成签名的随机串
+//   signature: 'b869d215abd7474fd0cd40e36462804f0c4c22d7',// 必填，签名
+//   jsApiList: [
+//     'checkJsApi',
+//     'chooseImage',
+//     'getLocalImgData',
+//     'uploadImage',
+//     'previewImage',
+//     'startRecord',
+//     'stopRecord',
+//     'onVoiceRecordEnd',
+//     'uploadVoice'
+//   ] // 必填，需要使用的JS接口列表
+// };
 
 const Home = () => {
   const [userInfo, setUserInfo] = useState({});
   const [isCreate, setIsCreate] = useState('');
-  const [recordId, setRecordId] = useState('1');
+  const [recordId, setRecordId] = useState('');
   const xStreamId = useMemo(() => getXStreamIdOrParentId(), []);
 
   useEffect(() => {
@@ -71,7 +71,7 @@ const Home = () => {
     wx.miniProgram.postMessage({
       data: {
         title: '生日照',
-        imageUrl: shareImg,
+        imageUrl: `${window.location.origin}${shareImg}`,
         path: `/pages/webview/index?url=${window.location.origin}/-._/!parentId=${recordId}`
       }
     })
@@ -87,7 +87,7 @@ const Home = () => {
 
   return (
     <div className="content">
-      {isCreate ? (isCreate === 'true' ?
+      {isCreate ? (isCreate === 'true' || recordId ?
         <Content
           recordId={recordId}
           userInfo={userInfo}

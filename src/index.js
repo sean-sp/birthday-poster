@@ -2,8 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import vConsole from 'vconsole';
 import './static/scss/common.scss';
 import './scripts/rem';
+
+new vConsole();
 
 ReactDOM.render(
   <React.StrictMode>
