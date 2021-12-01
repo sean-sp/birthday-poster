@@ -34,9 +34,9 @@ const Home = () => {
   const [isCreate, setIsCreate] = useState('');
   const [recordId, setRecordId] = useState('');
   const xStreamId = useMemo(() => getXStreamIdOrParentId(), []);
+  const parentId = useMemo(() => getXStreamIdOrParentId(true), []);
 
   useEffect(() => {
-    const parentId = getXStreamIdOrParentId(true);
     if (parentId) {
       setRecordId(parentId);
     }
@@ -60,8 +60,10 @@ const Home = () => {
     request.get(APIS.getUserInfo, { xStreamId }).then((res) => {
       const data = JSON.parse(res.data);
       setUserInfo(data.msg || {});
-      setRecordId(data.recordId);
       setIsCreate(data.isCreate);
+      if (!parentId) {
+        setRecordId(data.recordId);
+      }
     }).catch((err) => {
       Toast(err.msg || '网络开小差了');
     });
@@ -75,11 +77,7 @@ const Home = () => {
         path: `/pages/webview/index?url=${window.location.origin}/-._/!parentId=${recordId}`
       }
     })
-  }, []);
-
-  const closeCreate = () => {
-    setIsCreate('true');
-  }
+  }, [recordId]);
 
   const setRecordIdCb = (recordId) => {
     setRecordId(recordId);
@@ -87,7 +85,7 @@ const Home = () => {
 
   return (
     <div className="content">
-      {isCreate ? (isCreate === 'true' || recordId ?
+      {isCreate ? (recordId ?
         <Content
           recordId={recordId}
           userInfo={userInfo}
@@ -95,7 +93,6 @@ const Home = () => {
         /> :
         <Create
           userInfo={userInfo}
-          closeCreate={closeCreate}
           setRecordIdCb={setRecordIdCb}
           xStreamId={xStreamId}
         />) : <Loading type="ball" className="center-loading" />}

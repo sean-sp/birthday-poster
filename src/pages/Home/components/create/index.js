@@ -32,7 +32,7 @@ let localId = '';
 let val = '';
 
 const Create = (props) => {
-    const { userInfo, closeCreate, setRecordIdCb, xStreamId } = props;
+    const { userInfo, setRecordIdCb, xStreamId } = props;
     const stickerList = [
         {
             key: 1,
@@ -136,11 +136,12 @@ const Create = (props) => {
                         modeType: active - 1, remark: msgValue || undefined,
                         xStreamId
                     }).then((res) => {
-                        setRecordIdCb(res.data);
                         setIsCreating(false);
                         Toast({
                             message: '创建成功',
-                            onClose: closeCreate
+                            onClose: () => {
+                                setRecordIdCb(res.data);
+                            }
                         });
                     }).catch((err) => {
                         setIsCreating(false);
