@@ -70,13 +70,17 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    wx.miniProgram.postMessage({
-      data: {
-        title: '生日照',
-        imageUrl: `${window.location.origin}${shareImg}`,
-        path: `/pages/webview/index?url=${window.location.origin}/-._/!parentId=${recordId}`
-      }
-    })
+    try {
+      wx.miniProgram.postMessage({
+        data: {
+          title: '生日照',
+          imageUrl: `${window.location.origin}${shareImg}`,
+          path: `/pages/webview/index?url=${window.location.origin}/-._/!parentId=${recordId}`
+        }
+      })
+    } catch (error) {
+
+    }
   }, [recordId]);
 
   const setRecordIdCb = (recordId) => {
