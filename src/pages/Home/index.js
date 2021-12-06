@@ -10,33 +10,33 @@ import './index.scss';
 
 const shareImg = require('../../static/images/share_img.png').default;
 
-const myConfig = {
-  debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-  appId: 'wxcdb66d9a27951efe', // 必填，公众号的唯一标识
-  timestamp: '1636964029', // 必填，生成签名的时间戳
-  nonceStr: 'test', // 必填，生成签名的随机串
-  signature: 'b869d215abd7474fd0cd40e36462804f0c4c22d7',// 必填，签名
-  jsApiList: [
-    'checkJsApi',
-    'chooseImage',
-    'getLocalImgData',
-    'uploadImage',
-    'previewImage',
-    'startRecord',
-    'stopRecord',
-    'onVoiceRecordEnd',
-    'uploadVoice'
-  ] // 必填，需要使用的JS接口列表
-};
+// const myConfig = {
+//   debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+//   appId: 'wxcdb66d9a27951efe', // 必填，公众号的唯一标识
+//   timestamp: '1636964029', // 必填，生成签名的时间戳
+//   nonceStr: 'test', // 必填，生成签名的随机串
+//   signature: 'b869d215abd7474fd0cd40e36462804f0c4c22d7',// 必填，签名
+//   jsApiList: [
+//     'checkJsApi',
+//     'chooseImage',
+//     'getLocalImgData',
+//     'uploadImage',
+//     'previewImage',
+//     'startRecord',
+//     'stopRecord',
+//     'onVoiceRecordEnd',
+//     'uploadVoice'
+//   ] // 必填，需要使用的JS接口列表
+// };
 
 const Home = () => {
   const [userInfo, setUserInfo] = useState({});
   const [isCreate, setIsCreate] = useState('');
-  const [recordId, setRecordId] = useState('1');
+  const [recordId, setRecordId] = useState('');
   const xStreamId = useMemo(() => getXStreamIdOrParentId(), []);
+  const parentId = useMemo(() => getXStreamIdOrParentId(true), []);
 
   useEffect(() => {
-    const parentId = getXStreamIdOrParentId(true);
     if (parentId) {
       setRecordId(parentId);
     }
@@ -60,28 +60,28 @@ const Home = () => {
     request.get(APIS.getUserInfo, { xStreamId }).then((res) => {
       const data = JSON.parse(res.data);
       setUserInfo(data.msg || {});
-      setRecordId(data.recordId);
       setIsCreate(data.isCreate);
+      if (!parentId) {
+        setRecordId(data.recordId);
+      }
     }).catch((err) => {
       Toast(err.msg || '网络开小差了');
     });
   }, []);
 
   useEffect(() => {
-    wx.ready(() => {
+    try {
       wx.miniProgram.postMessage({
         data: {
           title: '生日照',
-          imageUrl: shareImg,
-          path: `/pages/webview/index?${window.location.origin}/-._/!parentId=${recordId}`
+          imageUrl: `${window.location.origin}${shareImg}`,
+          path: `/pages/webview/index?url=${window.location.origin}/-._/!parentId=${recordId}`
         }
       })
-    });
-  }, []);
+    } catch (error) {
 
-  const closeCreate = () => {
-    setIsCreate('true');
-  }
+    }
+  }, [recordId]);
 
   const setRecordIdCb = (recordId) => {
     setRecordId(recordId);
@@ -89,7 +89,7 @@ const Home = () => {
 
   return (
     <div className="content">
-      {isCreate ? (isCreate === 'true' ?
+      {isCreate ? (recordId ?
         <Content
           recordId={recordId}
           userInfo={userInfo}
@@ -97,7 +97,6 @@ const Home = () => {
         /> :
         <Create
           userInfo={userInfo}
-          closeCreate={closeCreate}
           setRecordIdCb={setRecordIdCb}
           xStreamId={xStreamId}
         />) : <Loading type="ball" className="center-loading" />}
