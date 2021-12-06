@@ -35,6 +35,8 @@
           border: none;
           font-size: 0.28rem;
           background-color: transparent;
+          user-select:text;
+          -webkit-user-select: text;
       }
       input:-moz-placeholder,
       textarea:-moz-placeholder { 
