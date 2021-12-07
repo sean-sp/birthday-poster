@@ -30,81 +30,82 @@ import receiveCoupon from '../../../../static/images/share_img.png'
 import closeImg from '../../../../static/images/close_img.png'
 import birthdayMp3 from '../../../../static/audio/birthday.mp3'
 
-import avatar from '../../../../static/images/close_img.png'
+let timer = null;
+let loopOff = true;
 
 const dataList = [
-    {
-        avatar,
-        nickname: '爱德华兹',
-        wishContent: '生日快乐',
-        wishType: 'text',
-        recordId: 2233,
-        wishPicUrl: '',
-        wishVoiceUrl: ''
-    },
-    {
-        avatar,
-        nickname: '爱德华兹1',
-        wishContent: '生日快乐',
-        wishType: 'img',
-        recordId: 22633,
-        wishPicUrl: shareIcon,
-        wishVoiceUrl: ''
-    },
-    {
-        avatar,
-        nickname: '爱德华兹2',
-        wishContent: '生日快乐',
-        wishType: 'text',
-        recordId: 22533,
-        wishPicUrl: '',
-        wishVoiceUrl: ''
-    },
-    {
-        avatar,
-        nickname: '爱德华兹3',
-        wishContent: '生日快乐',
-        wishType: 'text',
-        recordId: 22433,
-        wishPicUrl: '',
-        wishVoiceUrl: ''
-    },
-    {
-        avatar,
-        nickname: '爱德华兹4',
-        wishContent: '生日快乐',
-        wishType: 'text',
-        recordId: 22133,
-        wishPicUrl: '',
-        wishVoiceUrl: ''
-    },
-    {
-        avatar,
-        nickname: '爱德华兹5',
-        wishContent: '生日快乐',
-        wishType: 'text',
-        recordId: 2232113,
-        wishPicUrl: '',
-        wishVoiceUrl: ''
-    },
-    {
-        avatar,
-        nickname: '爱德华兹6',
-        wishContent: '生日快乐',
-        wishType: 'text',
-        recordId: 22323,
-        wishPicUrl: '',
-        wishVoiceUrl: ''
-    },
-    {
-        avatar,
-        nickname: '爱德华兹7',
-        wishContent: '生日快乐',
-        wishType: 'text',
-        recordId: 223,
-        wishPicUrl: '',
-        wishVoiceUrl: ''
-    },
+    // {
+    //     avatar,
+    //     nickname: '爱德华兹',
+    //     wishContent: '生日快乐',
+    //     wishType: 'text',
+    //     recordId: 2233,
+    //     wishPicUrl: '',
+    //     wishVoiceUrl: ''
+    // },
+    // {
+    //     avatar,
+    //     nickname: '爱德华兹1',
+    //     wishContent: '生日快乐',
+    //     wishType: 'img',
+    //     recordId: 22633,
+    //     wishPicUrl: shareIcon,
+    //     wishVoiceUrl: ''
+    // },
+    // {
+    //     avatar,
+    //     nickname: '爱德华兹2',
+    //     wishContent: '生日快乐',
+    //     wishType: 'text',
+    //     recordId: 22533,
+    //     wishPicUrl: '',
+    //     wishVoiceUrl: ''
+    // },
+    // {
+    //     avatar,
+    //     nickname: '爱德华兹3',
+    //     wishContent: '生日快乐',
+    //     wishType: 'text',
+    //     recordId: 22433,
+    //     wishPicUrl: '',
+    //     wishVoiceUrl: ''
+    // },
+    // {
+    //     avatar,
+    //     nickname: '爱德华兹4',
+    //     wishContent: '生日快乐',
+    //     wishType: 'text',
+    //     recordId: 22133,
+    //     wishPicUrl: '',
+    //     wishVoiceUrl: ''
+    // },
+    // {
+    //     avatar,
+    //     nickname: '爱德华兹5',
+    //     wishContent: '生日快乐',
+    //     wishType: 'text',
+    //     recordId: 2232113,
+    //     wishPicUrl: '',
+    //     wishVoiceUrl: ''
+    // },
+    // {
+    //     avatar,
+    //     nickname: '爱德华兹6',
+    //     wishContent: '生日快乐',
+    //     wishType: 'text',
+    //     recordId: 22323,
+    //     wishPicUrl: '',
+    //     wishVoiceUrl: ''
+    // },
+    // {
+    //     avatar,
+    //     nickname: '爱德华兹7',
+    //     wishContent: '生日快乐',
+    //     wishType: 'text',
+    //     recordId: 223,
+    //     wishPicUrl: '',
+    //     wishVoiceUrl: ''
+    // },
 ];
 
 const Content = (props) => {
@@ -120,15 +121,6 @@ const Content = (props) => {
     const [isBubbleShow, setIsBubbleShow] = useState(true);
 
     useEffect(() => {
-        request.get(APIS.getDetail, { recordId }).then((res) => {
-            const data = res.data || {};
-            const { birthdayInfoDTO, birthdayWishDTOList, isOneself } = data;
-            setDetail(birthdayInfoDTO || {});
-            setIsOneself(isOneself);
-            // setCommentsList(birthdayWishDTOList || []);
-        }).catch((err) => {
-            Toast(err.msg || '网络开小差了');
-        });
         if (xStreamId) {
             request.post(APIS.getQrCode, {
                 page: `${window.location.origin}${window.location.pathname}#/?parentId=${recordId}`,
@@ -138,6 +130,45 @@ const Content = (props) => {
             })
         }
     }, []);
+
+    useEffect(() => {
+        getDetailRequest();
+        timer = setInterval(() => {
+            if (!loopOff) {
+                clearInterval(timer);
+                return;
+            }
+            getDetailRequest();
+        }, 5000);
+        return () => {
+            clearInterval(timer);
+        }
+    }, []);
+
+    // useEffect(() => {
+    //     const posterMusic = document.getElementById('posterMusic');
+    //     posterMusic.addEventListener('playing', () => {
+    //         setMusicPlaying(true);
+    //     }, false);
+    //     posterMusic.addEventListener('pause', () => {
+    //         setMusicPlaying(false);
+    //     }, false);
+    // }, []);
+
+    const getDetailRequest = () => {
+        const params = xStreamId ? { recordId, xstreamId: xStreamId } : { recordId };
+        request.get(APIS.getDetail, params).then((res) => {
+            const data = res.data || {};
+            const { birthdayInfoDTO, birthdayWishDTOList, isOneself } = data;
+            setDetail(birthdayInfoDTO || {});
+            setIsOneself(isOneself);
+            setCommentsList(birthdayWishDTOList || []);
+            loopOff = true;
+        }).catch((err) => {
+            loopOff = false;
+            Toast(err.msg || '网络开小差了');
+        });
+    }
 
     const deleteComment = (item) => {
         setIsBubbleShow(false);
@@ -154,7 +185,10 @@ const Content = (props) => {
 
     const sendCommentsCb = (comment) => {
         const { id, name, avatar } = userInfo;
-        request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishContent: comment, wishType: 'text' }).then(() => {
+        request.post(APIS.submitBirthdayWish, {
+            birthdayInfoRecordId: recordId, nickname: name, userId: id,
+            avatar, wishContent: comment, wishType: 'text', xstreamId: xStreamId
+        }).then(() => {
             request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
                 setCommentsList(res.data || []);
                 Toast({
@@ -177,7 +211,10 @@ const Content = (props) => {
                 const serverId = res.serverId; // 返回音频的服务器端ID
                 request.post(APIS.uploadFile, { fileType: 2, mediaId: serverId, xstreamId: xStreamId }).then((res) => {
                     const { id, name, avatar } = userInfo;
-                    request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishVoiceUrl: res.data, wishType: 'voice' }).then(() => {
+                    request.post(APIS.submitBirthdayWish, {
+                        birthdayInfoRecordId: recordId, nickname: name, userId: id,
+                        avatar, wishVoiceUrl: res.data, wishType: 'voice', xstreamId: xStreamId
+                    }).then(() => {
                         request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
                             setCommentsList(res.data || []);
                             Toast({
@@ -212,7 +249,10 @@ const Content = (props) => {
                         const serverId = res.serverId; // 返回图片的服务器端ID
                         request.post(APIS.uploadFile, { fileType: 1, mediaId: serverId, xstreamId: xStreamId }).then((res) => {
                             const { id, name, avatar } = userInfo;
-                            request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishPicUrl: res.data, wishType: 'img' }).then((res) => {
+                            request.post(APIS.submitBirthdayWish, {
+                                birthdayInfoRecordId: recordId, nickname: name, userId: id,
+                                avatar, wishPicUrl: res.data, wishType: 'img', xstreamId: xStreamId
+                            }).then((res) => {
                                 request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
                                     setCommentsList(res.data || []);
                                     Toast({
@@ -276,6 +316,17 @@ const Content = (props) => {
         wx.miniProgram.navigateTo({ url: '/pages/index/index' });
     }
 
+    const onMusicPlay = () => {
+        const posterMusic = document.getElementById('posterMusic');
+        if (posterMusic.paused) {
+            posterMusic.play();
+            setMusicPlaying(true);
+        } else {
+            posterMusic.pause();
+            setMusicPlaying(false);
+        }
+    }
+
     const { posterUrl, modeType } = detail;
     const active = modeType + 1;
 
@@ -318,7 +369,7 @@ const Content = (props) => {
             />
             <audio
                 src={birthdayMp3}
-                autoPlay
+                // autoPlay
                 loop
             >
                 Your browser does not support the <code>audio</code> element.

@@ -81,7 +81,8 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js"
+    "test": "node scripts/test.js",
+    "lint": "eslint --ext .js ./"
   },
   "eslintConfig": {
     "extends": [
@@ -158,5 +159,5 @@
     "node-sass": "^6.0.1",
     "qrcode": "^1.4.4"
   },
-  "proxy": "https://crm-birthday.online.hzmantu.com"
+  "proxy": "https://crm-birthday.dev.hzmantu.com"
 }
