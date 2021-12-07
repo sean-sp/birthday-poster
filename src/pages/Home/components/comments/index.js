@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Toast } from 'react-vant';
 import wx from 'weixin-js-sdk';
 import { isLogin } from '../../../../utils';
@@ -8,14 +8,23 @@ import './index.scss';
 let timer = null;
 let startTime = 0;
 let endTime = 0;
-let moveOff = false;
+// let moveOff = false;
 
 const Comments = (props) => {
+  const voiceBtnRef = useRef();
   const { sendCommentsCb, uploadImg, sendVoice } = props;
   const [inputVal, setInputVal] = useState('');
   const [sendVisible, setSendVisible] = useState(false);
   const [voiceBtnVisible, setVoiceBtnVisible] = useState(false);
   const [voiceBtnClickOff, setVoiceBtnClickOff] = useState(false);
+
+  useEffect(() => {
+    const voiceBtnDom = voiceBtnRef.current;
+    voiceBtnDom.addEventListener('touchstart', start, { passive: false });
+    // voiceBtnDom.addEventListener('touchmove', move, { passive: false });
+    voiceBtnDom.addEventListener('touchend', end, { passive: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const initRecordPermission = () => {
     if (!window.localStorage.getItem('rainAllowRecord')) {
@@ -47,7 +56,7 @@ const Comments = (props) => {
 
   const start = (e) => {
     setVoiceBtnClickOff(true);
-    moveOff = false;
+    // moveOff = false;
     startTime = new Date().getTime();
     timer = setTimeout(() => {
       wx.startRecord({
@@ -68,23 +77,27 @@ const Comments = (props) => {
         }
       });
     }, 300);
+    e.stopPropagation();
+    e.preventDefault();
   }
 
-  const move = (e) => {
-    setVoiceBtnClickOff(false);
-    moveOff = true;
-    clearTimeout(timer);
-    Toast({
-      message: '取消发送',
-      icon: 'warning',
-    });
-    setTimeout(() => {
-      wx.stopRecord();
-    }, 800);
-  }
+  // const move = (e) => {
+  //   setVoiceBtnClickOff(false);
+  //   moveOff = true;
+  //   clearTimeout(timer);
+  //   Toast({
+  //     message: '取消发送',
+  //     icon: 'warning',
+  //   });
+  //   setTimeout(() => {
+  //     wx.stopRecord();
+  //   }, 800);
+  //   e.stopPropagation();
+  //   e.preventDefault();
+  // }
 
   const end = (e) => {
-    if (moveOff) return;
+    // if (moveOff) return;
     setVoiceBtnClickOff(false);
     endTime = new Date().getTime();
     if (endTime - startTime < 1000) {
@@ -109,6 +122,8 @@ const Comments = (props) => {
         }
       });
     }
+    e.stopPropagation();
+    e.preventDefault();
   }
 
   const sendComments = () => {
@@ -122,16 +137,20 @@ const Comments = (props) => {
 
   return (
     <div className="comments-btn-box">
-      {voiceBtnVisible ? <div className={`voice-btn ${voiceBtnClickOff ? 'active' : ''}`}
-        onTouchStart={start}
-        onTouchMove={move}
-        onTouchEnd={end}
-      >
-        {voiceBtnClickOff ? '松开结束' : '按住说话'}
-      </div> :
-        <div className="text-input">
+      <div className="input-voice-box">
+        <div className={`voice-btn ${voiceBtnClickOff ? 'active' : ''}`}
+          // onTouchStart={start}
+          // onTouchMove={move}
+          // onTouchEnd={end}
+          ref={voiceBtnRef}
+          style={{ visibility: voiceBtnVisible ? 'initial' : 'hidden' }}
+        >
+          {voiceBtnClickOff ? '松开结束' : '按住说话'}
+        </div>
+        <div className="text-input" style={{ visibility: voiceBtnVisible ? 'hidden' : 'initial' }}>
           <input placeholder="请留下您的祝福..." onInput={onCommentsInput} value={inputVal} />
-        </div>}
+        </div>
+      </div>
       <div className="voice-svg" onClick={onVoiceClick}>
         {voiceBtnVisible ? <KeyboardSvgComponent /> : <VoiceSvgComponent />}
       </div>

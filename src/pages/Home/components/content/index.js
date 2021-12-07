@@ -31,6 +31,9 @@ import receiveCoupon from '../../../../static/images/share_img.png'
 import closeImg from '../../../../static/images/close_img.png'
 import birthdayMp3 from '../../../../static/audio/birthday.mp3'
 
+let timer = null;
+let loopOff = true;
+
 const dataList = [
     // {
     //     avatar,
@@ -57,15 +60,6 @@ const Content = (props) => {
     const [musicPlaying, setMusicPlaying] = useState(false);
 
     useEffect(() => {
-        request.get(APIS.getDetail, { recordId }).then((res) => {
-            const data = res.data || {};
-            const { birthdayInfoDTO, birthdayWishDTOList, isOneself } = data;
-            setDetail(birthdayInfoDTO || {});
-            setIsOneself(isOneself);
-            setCommentsList(birthdayWishDTOList || []);
-        }).catch((err) => {
-            Toast(err.msg || '网络开小差了');
-        });
         if (xStreamId) {
             request.post(APIS.getQrCode, {
                 page: `${window.location.origin}${window.location.pathname}#/?parentId=${recordId}`,
@@ -77,14 +71,43 @@ const Content = (props) => {
     }, []);
 
     useEffect(() => {
-        const posterMusic = document.getElementById('posterMusic');
-        posterMusic.addEventListener('playing', () => {
-            setMusicPlaying(true);
-        }, false);
-        posterMusic.addEventListener('pause', () => {
-            setMusicPlaying(false);
-        }, false);
+        getDetailRequest();
+        timer = setInterval(() => {
+            if (!loopOff) {
+                clearInterval(timer);
+                return;
+            }
+            getDetailRequest();
+        }, 5000);
+        return () => {
+            clearInterval(timer);
+        }
     }, []);
+
+    // useEffect(() => {
+    //     const posterMusic = document.getElementById('posterMusic');
+    //     posterMusic.addEventListener('playing', () => {
+    //         setMusicPlaying(true);
+    //     }, false);
+    //     posterMusic.addEventListener('pause', () => {
+    //         setMusicPlaying(false);
+    //     }, false);
+    // }, []);
+
+    const getDetailRequest = () => {
+        const params = xStreamId ? { recordId, xstreamId: xStreamId } : { recordId };
+        request.get(APIS.getDetail, params).then((res) => {
+            const data = res.data || {};
+            const { birthdayInfoDTO, birthdayWishDTOList, isOneself } = data;
+            setDetail(birthdayInfoDTO || {});
+            setIsOneself(isOneself);
+            setCommentsList(birthdayWishDTOList || []);
+            loopOff = true;
+        }).catch((err) => {
+            loopOff = false;
+            Toast(err.msg || '网络开小差了');
+        });
+    }
 
     const deleteComment = (item) => {
         setIsBubbleShow(false);
@@ -101,7 +124,10 @@ const Content = (props) => {
 
     const sendCommentsCb = (comment) => {
         const { id, name, avatar } = userInfo;
-        request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishContent: comment, wishType: 'text' }).then(() => {
+        request.post(APIS.submitBirthdayWish, {
+            birthdayInfoRecordId: recordId, nickname: name, userId: id,
+            avatar, wishContent: comment, wishType: 'text', xstreamId: xStreamId
+        }).then(() => {
             request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
                 setCommentsList(res.data || []);
                 Toast({
@@ -124,7 +150,10 @@ const Content = (props) => {
                 const serverId = res.serverId; // 返回音频的服务器端ID
                 request.post(APIS.uploadFile, { fileType: 2, mediaId: serverId, xstreamId: xStreamId }).then((res) => {
                     const { id, name, avatar } = userInfo;
-                    request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishVoiceUrl: res.data, wishType: 'voice' }).then(() => {
+                    request.post(APIS.submitBirthdayWish, {
+                        birthdayInfoRecordId: recordId, nickname: name, userId: id,
+                        avatar, wishVoiceUrl: res.data, wishType: 'voice', xstreamId: xStreamId
+                    }).then(() => {
                         request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
                             setCommentsList(res.data || []);
                             Toast({
@@ -159,7 +188,10 @@ const Content = (props) => {
                         const serverId = res.serverId; // 返回图片的服务器端ID
                         request.post(APIS.uploadFile, { fileType: 1, mediaId: serverId, xstreamId: xStreamId }).then((res) => {
                             const { id, name, avatar } = userInfo;
-                            request.post(APIS.submitBirthdayWish, { birthdayInfoRecordId: recordId, nickname: name, userId: id, avatar, wishPicUrl: res.data, wishType: 'img' }).then((res) => {
+                            request.post(APIS.submitBirthdayWish, {
+                                birthdayInfoRecordId: recordId, nickname: name, userId: id,
+                                avatar, wishPicUrl: res.data, wishType: 'img', xstreamId: xStreamId
+                            }).then((res) => {
                                 request.get(APIS.getBirthdayWish, { birthdayInfoRecordId: recordId }).then((res) => {
                                     setCommentsList(res.data || []);
                                     Toast({
@@ -227,8 +259,10 @@ const Content = (props) => {
         const posterMusic = document.getElementById('posterMusic');
         if (posterMusic.paused) {
             posterMusic.play();
+            setMusicPlaying(true);
         } else {
             posterMusic.pause();
+            setMusicPlaying(false);
         }
     }
 
@@ -277,7 +311,7 @@ const Content = (props) => {
             />
             <audio
                 src={birthdayMp3}
-                autoPlay
+                // autoPlay
                 loop
                 id="posterMusic"
             >
