@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Dialog } from 'react-vant';
 // import ReactSeamlessScroll from 'react-seamless-scroll';
-import JsSeamlessScroll from "react-seamless-scroll";
+// import JsSeamlessScroll from "react-seamless-scroll";
+import CssSeamlessScroll from "react-seamless-scroll";
+
 import { isLogin } from '../../../../utils';
 import wx from 'weixin-js-sdk';
 import './index.scss';
@@ -71,26 +73,29 @@ const Bubble = (props) => {
 
     return (
         <div className="bubble_box" onClick={onParentTap}>
-            <JsSeamlessScroll datas={commentsList} scrollSwitch={true} speed={20} style={{ width: '5rem', height: '3rem' }}>
+            <CssSeamlessScroll datas={commentsList} scrollSwitch={true} speed={20} style={{ width: '5rem', height: '3rem' }}>
                 {
                     // onClick={() => onCommentTap(item)}
                     commentsList.map((item) => (
-                        <div key={item.recordId} data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl} className="bubble_item">
-                            <img className='avatar' data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl} src={item.avatar} alt="avatar"></img>
-                            <span className="nickname" data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl}>{item.nickname}:</span>
-                            {
-                                item.wishType === 'text' ? <span data-id={item.recordId} data-item={item.wishType}>{item.wishContent}</span> :
-                                    item.wishType === 'img' ? <img className="bubble_img" data-id={item.recordId} data-item={item.wishType} data-item2={item.wishPicUrl} src={item.wishPicUrl} alt="avatar"></img> :
-                                        <span className='voice_icon' data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl}>
-                                            <img src={activeVoice === item.recordId ? voiceIcon : voiceImg} data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} alt="voice" />
-                                        </span>
-                            }
-                            {isOneself && <span className='delete' data-type='delete' data-id={item.recordId} >x</span>}
-                            {/* onClick={(e) => deleteTap(e, item)} */}
+                        <div>
+                            <div key={item.recordId} data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl} className="bubble_item">
+                                <img className='avatar' data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl} src={item.avatar} alt="avatar"></img>
+                                <span className="nickname" data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} data-item2={item.wishPicUrl}>{item.nickname}:</span>
+                                {
+                                    item.wishType === 'text' ? <span data-id={item.recordId} data-item={item.wishType}>{item.wishContent}</span> :
+                                        item.wishType === 'img' ? <img className="bubble_img" data-id={item.recordId} data-item={item.wishType} data-item2={item.wishPicUrl} src={item.wishPicUrl} alt="avatar"></img> :
+                                            <span className='voice_icon' data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl}>
+                                                <img src={activeVoice === item.recordId ? voiceIcon : voiceImg} data-id={item.recordId} data-item={item.wishType} data-item1={item.wishVoiceUrl} alt="voice" />
+                                            </span>
+                                }
+                                {isOneself && <span className='delete' data-type='delete' data-id={item.recordId} >x</span>}
+                                {/* onClick={(e) => deleteTap(e, item)} */}
+                            </div>
+                            <p className="zhan"></p>
                         </div>
                     ))
                 }
-            </JsSeamlessScroll>
+            </CssSeamlessScroll>
         </div>
     )
 }
