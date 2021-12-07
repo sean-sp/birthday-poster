@@ -8,11 +8,13 @@
     .zhan{
         margin: 0;
         padding: 0;
-        height: 0.15rem;
+        height: 0.2rem;
+        margin-top:-0.05rem;
     }
     .bubble_item{
         // div{
-            display: table;
+            // display: table;
+            display: inline-block;
             width: auto;
             // min-height: 0.4rem;
             background-color:rgba(255,255,255,0.2);
@@ -21,7 +23,7 @@
             font-family: Microsoft YaHei;
             font-weight: 400;
             color: #FFFFFF;
-            margin-bottom: 0.03rem;
+            // margin-bottom: 0.03rem;
             padding: 0.02rem 0;
             position: relative;
             .avatar{
@@ -53,7 +55,7 @@
                     vertical-align: sub;
                     margin-right: 0;
                     position: absolute;
-                    top:1px;
+                    top:4px;
                 }
             }
             .bubble_img{
@@ -61,7 +63,7 @@
                 height: 0.9rem;
                 display: inline-block;
                 vertical-align: middle;
-                margin-right: 0;
+                margin-right: 0.15rem;
             }
             .delete{
                 display: inline-block;

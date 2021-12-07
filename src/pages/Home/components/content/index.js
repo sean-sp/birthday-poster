@@ -30,82 +30,85 @@ import receiveCoupon from '../../../../static/images/share_img.png'
 import closeImg from '../../../../static/images/close_img.png'
 import birthdayMp3 from '../../../../static/audio/birthday.mp3'
 
+import avatar from '../../../../static/images/close_img.png'
+
 let timer = null;
 let loopOff = true;
 
+
 const dataList = [
-    // {
-    //     avatar,
-    //     nickname: '爱德华兹',
-    //     wishContent: '生日快乐',
-    //     wishType: 'text',
-    //     recordId: 2233,
-    //     wishPicUrl: '',
-    //     wishVoiceUrl: ''
-    // },
-    // {
-    //     avatar,
-    //     nickname: '爱德华兹1',
-    //     wishContent: '生日快乐',
-    //     wishType: 'img',
-    //     recordId: 22633,
-    //     wishPicUrl: shareIcon,
-    //     wishVoiceUrl: ''
-    // },
-    // {
-    //     avatar,
-    //     nickname: '爱德华兹2',
-    //     wishContent: '生日快乐',
-    //     wishType: 'text',
-    //     recordId: 22533,
-    //     wishPicUrl: '',
-    //     wishVoiceUrl: ''
-    // },
-    // {
-    //     avatar,
-    //     nickname: '爱德华兹3',
-    //     wishContent: '生日快乐',
-    //     wishType: 'text',
-    //     recordId: 22433,
-    //     wishPicUrl: '',
-    //     wishVoiceUrl: ''
-    // },
-    // {
-    //     avatar,
-    //     nickname: '爱德华兹4',
-    //     wishContent: '生日快乐',
-    //     wishType: 'text',
-    //     recordId: 22133,
-    //     wishPicUrl: '',
-    //     wishVoiceUrl: ''
-    // },
-    // {
-    //     avatar,
-    //     nickname: '爱德华兹5',
-    //     wishContent: '生日快乐',
-    //     wishType: 'text',
-    //     recordId: 2232113,
-    //     wishPicUrl: '',
-    //     wishVoiceUrl: ''
-    // },
-    // {
-    //     avatar,
-    //     nickname: '爱德华兹6',
-    //     wishContent: '生日快乐',
-    //     wishType: 'text',
-    //     recordId: 22323,
-    //     wishPicUrl: '',
-    //     wishVoiceUrl: ''
-    // },
-    // {
-    //     avatar,
-    //     nickname: '爱德华兹7',
-    //     wishContent: '生日快乐',
-    //     wishType: 'text',
-    //     recordId: 223,
-    //     wishPicUrl: '',
-    //     wishVoiceUrl: ''
-    // },
+    {
+        avatar,
+        nickname: '爱德华兹',
+        wishContent: '生日快乐',
+        wishType: 'text',
+        recordId: 2233,
+        wishPicUrl: '',
+        wishVoiceUrl: ''
+    },
+    {
+        avatar,
+        nickname: '爱德华兹1',
+        wishContent: '生日快乐',
+        wishType: 'img',
+        recordId: 22633,
+        wishPicUrl: shareIcon,
+        wishVoiceUrl: ''
+    },
+    {
+        avatar,
+        nickname: '爱德华兹2',
+        wishContent: '',
+        wishType: 'voice',
+        recordId: 22533,
+        wishPicUrl: '',
+        wishVoiceUrl: ''
+    },
+    {
+        avatar,
+        nickname: '爱德华兹3',
+        wishContent: '生日快乐',
+        wishType: 'text',
+        recordId: 22433,
+        wishPicUrl: '',
+        wishVoiceUrl: ''
+    },
+    {
+        avatar,
+        nickname: '爱德华兹4',
+        wishContent: '生日快乐',
+        wishType: 'text',
+        recordId: 22133,
+        wishPicUrl: '',
+        wishVoiceUrl: ''
+    },
+    {
+        avatar,
+        nickname: '爱德华兹5',
+        wishContent: '生日快乐',
+        wishType: 'text',
+        recordId: 2232113,
+        wishPicUrl: '',
+        wishVoiceUrl: ''
+    },
+    {
+        avatar,
+        nickname: '爱德华兹6',
+        wishContent: '生日快乐',
+        wishType: 'text',
+        recordId: 22323,
+        wishPicUrl: '',
+        wishVoiceUrl: ''
+    },
+    {
+        avatar,
+        nickname: '爱德华兹7',
+        wishContent: '生日快乐',
+        wishType: 'text',
+        recordId: 223,
+        wishPicUrl: '',
+        wishVoiceUrl: ''
+    },
 ];
 
 const Content = (props) => {
@@ -162,7 +165,7 @@ const Content = (props) => {
             const { birthdayInfoDTO, birthdayWishDTOList, isOneself } = data;
             setDetail(birthdayInfoDTO || {});
             setIsOneself(isOneself);
-            setCommentsList(birthdayWishDTOList || []);
+            // setCommentsList(birthdayWishDTOList || []);
             loopOff = true;
         }).catch((err) => {
             loopOff = false;
