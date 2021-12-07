@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect,useRef } from 'react';
 import { Toast } from 'react-vant';
 import wx from 'weixin-js-sdk';
 import { isLogin } from '../../../../utils';
@@ -14,8 +14,9 @@ const Comments = (props) => {
   const { sendCommentsCb, uploadImg, sendVoice } = props;
   const [inputVal, setInputVal] = useState('');
   const [sendVisible, setSendVisible] = useState(false);
-  const [voiceBtnVisible, setVoiceBtnVisible] = useState(false);
+  const [voiceBtnVisible, setVoiceBtnVisible] = useState(true);
   const [voiceBtnClickOff, setVoiceBtnClickOff] = useState(false);
+  const resw = useRef()
 
   const initRecordPermission = () => {
     if (!window.localStorage.getItem('rainAllowRecord')) {
@@ -31,7 +32,17 @@ const Comments = (props) => {
     }
   }
 
+  useEffect(()=>{
+    resw.current.addEventListener('contextmenu', start)
+    console.log('w',)
+    window.ontouchstart = function(e) { 
+        e.preventDefault(); 
+    };
+  },[])
+
   const onCommentsInput = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     const value = e.target.value;
     setInputVal(value);
     setSendVisible(!!value.length);
@@ -46,6 +57,8 @@ const Comments = (props) => {
   }
 
   const start = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     setVoiceBtnClickOff(true);
     moveOff = false;
     startTime = new Date().getTime();
@@ -71,6 +84,8 @@ const Comments = (props) => {
   }
 
   const move = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     setVoiceBtnClickOff(false);
     moveOff = true;
     clearTimeout(timer);
@@ -84,6 +99,8 @@ const Comments = (props) => {
   }
 
   const end = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (moveOff) return;
     setVoiceBtnClickOff(false);
     endTime = new Date().getTime();
@@ -121,18 +138,18 @@ const Comments = (props) => {
   }
 
   return (
-    <div className="comments-btn-box">
-      {voiceBtnVisible ? <div className={`voice-btn ${voiceBtnClickOff ? 'active' : ''}`}
+    <div className="comments-btn-box" >
+      {voiceBtnVisible ? <a className={`voice-btn ${voiceBtnClickOff ? 'active' : ''}`}
         onTouchStart={start}
         onTouchMove={move}
         onTouchEnd={end}
       >
         {voiceBtnClickOff ? '松开结束' : '按住说话'}
-      </div> :
+      </a> :
         <div className="text-input">
           <input placeholder="请留下您的祝福..." onInput={onCommentsInput} value={inputVal} />
         </div>}
-      <div className="voice-svg" onClick={onVoiceClick}>
+      <div className="voice-svg" ref={resw} onClick={onVoiceClick}>
         {voiceBtnVisible ? <KeyboardSvgComponent /> : <VoiceSvgComponent />}
       </div>
       {sendVisible ? <div className="img-svg" onClick={sendComments}>

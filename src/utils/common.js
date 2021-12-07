@@ -33,3 +33,6 @@ export const isLogin = () => {
   }
   return true;
 }
+
+export const getFormatLocationHref = () =>
+  `${window.location.origin}${window.location.pathname.replace('index.html', '')}`;

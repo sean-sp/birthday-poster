@@ -4,7 +4,7 @@ import wx from 'weixin-js-sdk';
 import { Toast, Loading } from 'react-vant';
 import Create from './components/create'
 import Content from './components/content'
-import { request, getXStreamIdOrParentId } from '../../utils';
+import { request, getXStreamIdOrParentId, getFormatLocationHref } from '../../utils';
 import APIS from '../../configs';
 import './index.scss';
 
@@ -46,7 +46,7 @@ const Home = () => {
       }, 1000)
       return;
     }
-    request.get(APIS.getJsConfig, { baseURL: `${window.location.origin}/`, xStreamId }).then((res) => {
+    request.get(APIS.getJsConfig, { baseURL: `${window.location.origin}${window.location.pathname}`, xStreamId }).then((res) => {
       const wxConfig = JSON.parse(res.data).msg;
       // console.log(wxConfig)
       wx.config(wxConfig);
@@ -74,8 +74,8 @@ const Home = () => {
       wx.miniProgram.postMessage({
         data: {
           title: '生日照',
-          imageUrl: `${window.location.origin}${shareImg}`,
-          path: `/pages/webview/index?url=${window.location.origin}/-._/!parentId=${recordId}`
+          imageUrl: `${getFormatLocationHref()}${shareImg.replace('./', '')}`,
+          path: `/pages/webview/index?url=${window.location.origin}${window.location.pathname}-._/!parentId=${recordId}`
         }
       })
     } catch (error) {
@@ -95,11 +95,17 @@ const Home = () => {
           userInfo={userInfo}
           xStreamId={xStreamId}
         /> :
-        <Create
+        <Content
+          recordId={recordId}
           userInfo={userInfo}
-          setRecordIdCb={setRecordIdCb}
           xStreamId={xStreamId}
-        />) : <Loading type="ball" className="center-loading" />}
+        />
+        // <Create
+        //   userInfo={userInfo}
+        //   setRecordIdCb={setRecordIdCb}
+        //   xStreamId={xStreamId}
+        // />
+        ) : <Loading type="ball" className="center-loading" />}
     </div >
   )
 }

@@ -66,7 +66,7 @@ const Content = (props) => {
         });
         if (xStreamId) {
             request.post(APIS.getQrCode, {
-                page: `${window.location.origin}/#/?parentId=${recordId}`,
+                page: `${window.location.origin}${window.location.pathname}#/?parentId=${recordId}`,
                 xstreamId: xStreamId
             }).then((res) => {
                 setQrSrc(res.data);
